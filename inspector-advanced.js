@@ -3,7 +3,7 @@
  * Real-time entity and component editing
  */
 
-class TIGEN_Inspector {
+class TIGENInspector {
   constructor() {
     this.selected = null;
     this.container = document.getElementById("ins-root");
@@ -223,7 +223,7 @@ class TIGEN_Inspector {
   }
 }
 
-class TIGEN_Outliner {
+class TIGENOutliner {
   constructor() {
     this.container = document.getElementById("hierarchy");
     this.scene = null;
@@ -274,5 +274,5 @@ class TIGEN_Outliner {
   }
 }
 
-const TIGEN_Inspector = new TIGEN_Inspector();
-const TIGEN_Outliner = new TIGEN_Outliner();
+const TIGEN_Inspector = new TIGENInspector();
+const TIGEN_Outliner = new TIGENOutliner();
