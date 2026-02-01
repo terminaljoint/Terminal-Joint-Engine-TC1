@@ -318,7 +318,6 @@ class TIGENProjectManager {
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
-  <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"><\/script>
   <script>
     // Project data embedded
     const projectData = ${projectDataJSON};

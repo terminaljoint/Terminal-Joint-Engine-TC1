@@ -524,7 +524,7 @@ class AssetManager {
     this.assets = new Map();
     this.loading = new Map();
     this.loaders = {
-      gltf: new THREE.GLTFLoader(),
+      gltf: (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader === 'function') ? new THREE.GLTFLoader() : null,
       texture: new THREE.TextureLoader()
     };
   }
@@ -566,6 +566,10 @@ class AssetManager {
 
     if (this.loading.has(url)) {
       return this.loading.get(url);
+    }
+
+    if (!this.loaders.gltf) {
+      return Promise.reject(new Error('THREE.GLTFLoader is not available.'));
     }
 
     const promise = new Promise((resolve, reject) => {
