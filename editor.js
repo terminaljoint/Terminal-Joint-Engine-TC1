@@ -61,7 +61,7 @@ class TIGEN_Editor {
     this.playMode = false;
     this.savedState = null;
 
-    // UI References
+    // UI References (safely get elements - may not exist in auto-start mode)
     this.playBtn = document.getElementById("play-btn");
     this.clearBtn = document.getElementById("clear-btn");
     this.addBoxBtn = document.getElementById("add-box");
@@ -113,9 +113,10 @@ class TIGEN_Editor {
   }
 
   bindUI() {
-    this.playBtn.onclick = () => this.togglePlayMode();
-    this.clearBtn.onclick = () => this.clear();
-    this.addBoxBtn.onclick = () => this.spawnBox();
+    // Safely bind UI elements - they may not exist in auto-start mode
+    if (this.playBtn) this.playBtn.onclick = () => this.togglePlayMode();
+    if (this.clearBtn) this.clearBtn.onclick = () => this.clear();
+    if (this.addBoxBtn) this.addBoxBtn.onclick = () => this.spawnBox();
   }
 
   setupControls() {
@@ -216,13 +217,17 @@ class TIGEN_Editor {
     this.playMode = !this.playMode;
     
     if (this.playMode) {
-      this.playBtn.textContent = "STOP";
-      this.playBtn.style.background = "#ff4d4d";
+      if (this.playBtn) {
+        this.playBtn.textContent = "STOP";
+        this.playBtn.style.background = "#ff4d4d";
+      }
       this.savedState = JSON.stringify(this.scene.toJSON());
       // Start simulation
     } else {
-      this.playBtn.textContent = "ENTER GAMEWORLD";
-      this.playBtn.style.background = "#00ff88";
+      if (this.playBtn) {
+        this.playBtn.textContent = "ENTER GAMEWORLD";
+        this.playBtn.style.background = "#00ff88";
+      }
       // Restore state
     }
   }
