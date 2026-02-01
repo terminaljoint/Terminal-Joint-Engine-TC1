@@ -32,7 +32,9 @@ class TIGEN_Editor {
     const camera = cameraEntity.addComponent(Camera);
     const controller = cameraEntity.addComponent(FreeCameraController);
     
-    TIGEN_Outliner.setScene(this.scene);
+    if (typeof TIGEN_Outliner !== 'undefined') {
+      TIGEN_Outliner.setScene(this.scene);
+    }
   }
 
   createDefaultCube() {
@@ -102,7 +104,9 @@ class TIGEN_Editor {
         this.selectedEntity = null;
         TIGEN_Inspector.selected = null;
         TIGEN_Inspector.refresh();
-        TIGEN_Outliner.refresh();
+        if (typeof TIGEN_Outliner !== 'undefined') {
+          TIGEN_Outliner.refresh();
+        }
       }
     });
   }
@@ -121,7 +125,9 @@ class TIGEN_Editor {
   selectEntity(entity) {
     this.selectedEntity = entity;
     TIGEN_Inspector.select(entity);
-    TIGEN_Outliner.refresh();
+    if (typeof TIGEN_Outliner !== 'undefined') {
+      TIGEN_Outliner.refresh();
+    }
   }
 
   spawnBox() {
@@ -150,7 +156,9 @@ class TIGEN_Editor {
     this.physicsEngine.registerBody(physics);
     this.physicsEngine.registerCollider(collider);
     
-    TIGEN_Outliner.refresh();
+    if (typeof TIGEN_Outliner !== 'undefined') {
+      TIGEN_Outliner.refresh();
+    }
   }
 
   togglePlayMode() {
@@ -178,7 +186,9 @@ class TIGEN_Editor {
     this.selectedEntity = null;
     TIGEN_Inspector.selected = null;
     TIGEN_Inspector.refresh();
-    TIGEN_Outliner.refresh();
+    if (typeof TIGEN_Outliner !== 'undefined') {
+      TIGEN_Outliner.refresh();
+    }
   }
 
   update(dt) {
