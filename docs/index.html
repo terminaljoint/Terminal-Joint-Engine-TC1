@@ -63,6 +63,15 @@
       color: #666;
     }
 
+    .badge {
+      display: inline-block;
+      margin-left: 15px;
+    }
+
+    .badge img {
+      height: 20px;
+    }
+
     .nav-links {
       display: flex;
       gap: 30px;
@@ -248,6 +257,146 @@
 
     .code-block .keyword {
       color: #ff79c6;
+    }
+
+    .code-block .class {
+      color: #8be9fd;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      margin-top: 30px;
+    }
+
+    .step-description {
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    /* Code Examples Section */
+    .code-examples {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .example-card {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .example-card:hover {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.05);
+    }
+
+    .example-header {
+      background: rgba(0, 255, 136, 0.1);
+      padding: 15px 20px;
+      border-bottom: 1px solid #2a2d32;
+      font-weight: 600;
+      font-size: 14px;
+      color: #00ff88;
+    }
+
+    .example-card code {
+      display: block;
+      padding: 20px;
+      font-size: 12px;
+      overflow-x: auto;
+    }
+
+    /* Audience Section */
+    .audience-section {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(15, 17, 20, 0.8));
+      border-top: 1px solid #2a2d32;
+      border-bottom: 1px solid #2a2d32;
+      padding: 60px 20px;
+      margin: 80px 0;
+    }
+
+    .audience-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .audience-container h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .audience-item {
+      background: rgba(0, 255, 136, 0.05);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      padding: 25px;
+      border-radius: 8px;
+    }
+
+    .audience-item h4 {
+      color: #00ff88;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .audience-item p {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .docs-link {
+      color: #00ff88;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Docs Navigation */
+    .docs-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .docs-nav a {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #2a2d32;
+      color: #00ff88;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .docs-nav a:hover {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.1);
+    }
+
+    .docs-nav a.active {
+      background: rgba(0, 255, 136, 0.2);
     }
 
     .code-block .class {
@@ -483,11 +632,14 @@
   <nav>
     <div class="logo">
       TIGEN <span>v2</span>
+      <span class="badge">
+        <img src="https://img.shields.io/github/stars/terminaljoint/TIGEN?style=flat&color=00ff88&labelColor=0b0c0e" alt="GitHub Stars">
+      </span>
     </div>
     <ul class="nav-links">
       <li><a href="#features">Features</a></li>
       <li><a href="#quick-start">Quick Start</a></li>
-      <li><a href="#resources">Docs & Examples</a></li>
+      <li><a href="docs-getting-started.html">Docs</a></li>
       <li><a href="https://github.com/terminaljoint/TIGEN" target="_blank">GitHub</a></li>
       <li><a href="https://terminaljoint.github.io/TIGEN/sandbox/" target="_blank" class="cta-btn">Try Sandbox →</a></li>
     </ul>
@@ -498,9 +650,12 @@
 <section class="hero">
   <div class="hero-content">
     <h1><span>TIGEN</span> — Modular Web 3D Engine</h1>
-    <p class="tagline">Lightweight, powerful engine for web creators. PBR rendering, physics, spatial audio, and an intuitive entity-component system.</p>
+    <p class="tagline">A lightweight, modular 3D engine for creators who want web-native graphics without the complexity. Build games, visualizations, and interactive experiences—no backends required.</p>
+    <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 6px; padding: 15px 20px; margin: 30px auto; max-width: 600px; font-size: 14px; color: #aaa;">
+      <strong style="color: #00ff88;">→ Perfect for:</strong> Indie developers, prototypes, educators, 3D web portfolios, lightweight game development
+    </div>
     <div class="hero-buttons">
-      <a href="#quick-start" class="cta-btn">Get Started</a>
+      <a href="#quick-start" class="cta-btn">Get Started in 2 Min</a>
       <a href="https://github.com/terminaljoint/TIGEN" target="_blank" class="btn-secondary">View on GitHub</a>
     </div>
   </div>
@@ -577,31 +732,82 @@
 
 <!-- Quick Start Section -->
 <section class="quick-start" id="quick-start">
-  <h2><span>Quick Start</span></h2>
+  <h2><span>Quick Start in 2 Minutes</span></h2>
   
-  <p style="color: #aaa; margin-bottom: 30px;">Get TIGEN running in seconds.</p>
+  <p style="color: #aaa; margin-bottom: 30px; font-size: 15px;">Follow these steps to get TIGEN running and see your first 3D scene.</p>
 
-  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">1. Clone the Repository</h3>
+  <!-- Step 1: Clone -->
+  <h3 class="step-title">Step 1: Clone & Setup</h3>
+  <p class="step-description">Clone the repo and start a local dev server.</p>
   <div class="code-block">
-    <code>$ git clone https://github.com/terminaljoint/TIGEN.git<br>$ cd TIGEN</code>
+    <code>$ git clone https://github.com/terminaljoint/TIGEN.git<br>$ cd TIGEN<br>$ python3 -m http.server 8000</code>
+  </div>
+  <p style="color: #666; font-size: 12px;">Then open <strong>http://localhost:8000</strong> in your browser.</p>
+
+  <!-- Step 2: Project Structure -->
+  <h3 class="step-title">Step 2: Understanding the File Structure</h3>
+  <p class="step-description">TIGEN comes with everything you need. Here's what each file does:</p>
+  <div class="code-block">
+    <code><span class="keyword">main.js</span>          <span style="color: #666;">← Entry point (initializes engine)</span><br><span class="keyword">ecs.js</span>            <span style="color: #666;">← Entity-Component System core</span><br><span class="keyword">rendering.js</span>      <span style="color: #666;">← 3D renderer with PBR support</span><br><span class="keyword">physics.js</span>        <span style="color: #666;">← Physics engine with collisions</span><br><span class="keyword">audio.js</span>          <span style="color: #666;">← Spatial 3D audio system</span><br><span class="keyword">scene.js</span>          <span style="color: #666;">← Scene graph & management</span></code>
   </div>
 
-  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">2. Start a Local Server</h3>
+  <!-- Step 3: Create Your First Scene -->
+  <h3 class="step-title">Step 3: Create Your First Scene</h3>
+  <p class="step-description">Create an HTML file and load TIGEN:</p>
   <div class="code-block">
-    <code>$ python3 -m http.server 8000</code>
+    <code><span class="keyword">&lt;!DOCTYPE html&gt;</span><br><span class="keyword">&lt;html&gt;</span><br><span class="keyword">&lt;head&gt;</span><br>  <span class="keyword">&lt;title&gt;</span>My TIGEN Project<span class="keyword">&lt;/title&gt;</span><br>  <span class="keyword">&lt;script</span> <span class="class">src</span>=<span class="class">"https://cdn.jsdelivr.net/npm/three@0.145/build/three.min.js"</span><span class="keyword">&gt;&lt;/script&gt;</span><br><span class="keyword">&lt;/head&gt;</span><br><span class="keyword">&lt;body&gt;</span><br>  <span class="keyword">&lt;div</span> <span class="class">id</span>=<span class="class">"app"</span> <span class="keyword">/&gt;</span><br>  <span class="keyword">&lt;script</span> <span class="class">type</span>=<span class="class">"module"</span><span class="keyword">&gt;</span><br>    <span class="keyword">import</span> { Engine } <span class="keyword">from</span> <span class="class">'./main.js'</span>;<br>    <span class="keyword">const</span> engine = <span class="keyword">new</span> Engine();<br>    engine.run();<br>  <span class="keyword">&lt;/script&gt;</span><br><span class="keyword">&lt;/body&gt;</span><br><span class="keyword">&lt;/html&gt;</span></code>
   </div>
 
-  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">3. Open in Browser</h3>
-  <div class="code-block">
-    <code>http://localhost:8000</code>
+  <!-- Step 4: Real Examples -->
+  <h3 class="step-title">Step 4: Common Patterns</h3>
+  <div class="example-grid">
+    <div class="example-card">
+      <div class="example-header">📦 Create a Cube Entity</div>
+      <code><span class="keyword">const</span> cube = scene.create({
+  geometry: <span class="class">'box'</span>,
+  material: {
+    color: <span class="class">0x00ff88</span>,
+    metallic: <span class="class">0.8</span>,
+    roughness: <span class="class">0.2</span>
+  },
+  transform: {
+    position: [<span class="class">0</span>, <span class="class">1</span>, <span class="class">0</span>]
+  }
+});</code>
+    </div>
+    <div class="example-card">
+      <div class="example-header">⚙️ Add Physics to Entity</div>
+      <code><span class="keyword">cube.addComponent</span>(<span class="class">'physics'</span>, {
+  type: <span class="class">'rigid'</span>,
+  mass: <span class="class">1</span>,
+  friction: <span class="class">0.5</span>,
+  collider: {
+    type: <span class="class">'box'</span>,
+    size: [<span class="class">1</span>, <span class="class">1</span>, <span class="class">1</span>]
+  }
+});</code>
+    </div>
+    <div class="example-card">
+      <div class="example-header">🎬 Animate a Transform</div>
+      <code><span class="keyword">cube.addComponent</span>(<span class="class">'animation'</span>, {
+  rotation: {
+    x: <span class="class">0</span>,
+    y: <span class="class">Math.PI * 2</span>,
+    z: <span class="class">0</span>
+  },
+  duration: <span class="class">3</span>,
+  loop: <span class="keyword">true</span>
+});</code>
+    </div>
   </div>
 
-  <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 15px; margin-top: 30px;">4. Basic Usage</h3>
-  <div class="code-block">
-    <code><span class="keyword">import</span> { <span class="class">Engine</span> } <span class="keyword">from</span> <span class="class">'./main.js'</span>;<br><br><span class="keyword">const</span> engine = <span class="keyword">new</span> <span class="class">Engine</span>();<br>engine.<span class="class">run</span>();</code>
+  <div class="docs-nav" style="margin-top: 40px; justify-content: center;">
+    <a href="docs-getting-started.html">📖 Full Getting Started Guide</a>
+    <a href="docs-api.html">⚙️ API Reference</a>
+    <a href="https://github.com/terminaljoint/TIGEN/blob/main/EXAMPLES.md" target="_blank">💡 More Examples</a>
   </div>
 
-  <p style="color: #aaa; margin-top: 30px; font-size: 13px;">For detailed documentation, see <a href="https://github.com/terminaljoint/TIGEN#documentation" target="_blank" style="color: #00ff88;">the full README →</a></p>
+  <p style="color: #aaa; margin-top: 40px; font-size: 13px; text-align: center;">For detailed documentation, see <a href="docs-getting-started.html" style="color: #00ff88;">the full guide →</a></p>
 </section>
 
 <!-- Demo Section -->
@@ -617,38 +823,71 @@
   </div>
 </section>
 
+<!-- Why TIGEN? -->
+<section class="audience-section">
+  <div class="audience-container">
+    <h3>Why Choose <span style="color: #00ff88;">TIGEN</span>?</h3>
+    <div class="audience-grid">
+      <div class="audience-item">
+        <h4>🚀 For Indie Developers</h4>
+        <p>No expensive licenses or complex setup. Build 3D games and experiences with pure JavaScript. Ship to the web instantly.</p>
+      </div>
+      <div class="audience-item">
+        <h4>🎓 For Educators</h4>
+        <p>Teach game development with a modern, understandable engine. Source code is fully readable and customizable for learning.</p>
+      </div>
+      <div class="audience-item">
+        <h4>🎨 For Creative Developers</h4>
+        <p>Build interactive art, visualizations, and 3D portfolios. No backends needed—deploy anywhere a web server runs.</p>
+      </div>
+      <div class="audience-item">
+        <h4>⚡ Lightweight & Fast</h4>
+        <p>Unlike heavy engines, TIGEN loads in milliseconds. Modular architecture means you only include what you need.</p>
+      </div>
+      <div class="audience-item">
+        <h4>🔧 Fully Open Source</h4>
+        <p>MIT licensed. No vendor lock-in. Customize everything. Join a growing community of developers building on TIGEN.</p>
+      </div>
+      <div class="audience-item">
+        <h4>📦 Modern Features</h4>
+        <p>PBR rendering, physics, spatial audio, particles, animations, and an ECS system—everything you need for professional results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Resources Section -->
 <section class="resources" id="resources">
   <h2 class="section-title">Docs & <span>Resources</span></h2>
   <div class="resources-grid">
     <div class="resource-card">
-      <h3>📖 API Reference</h3>
-      <p>Complete API documentation with examples for all TIGEN systems and components.</p>
-      <a href="https://github.com/terminaljoint/TIGEN/blob/main/API_REFERENCE.md" target="_blank">Read Docs</a>
+      <h3>📖 Getting Started</h3>
+      <p>New to TIGEN? Learn the basics, understand the architecture, and build your first scene.</p>
+      <a href="docs-getting-started.html">Read Guide</a>
     </div>
     <div class="resource-card">
-      <h3>🎓 Tutorials</h3>
-      <p>Step-by-step guides to help you master TIGEN and build 3D web projects.</p>
-      <a href="https://github.com/terminaljoint/TIGEN/blob/main/TUTORIAL.md" target="_blank">View Tutorials</a>
+      <h3>⚙️ API Reference</h3>
+      <p>Complete API documentation with examples for all TIGEN systems, classes, and methods.</p>
+      <a href="docs-api.html">View API</a>
     </div>
     <div class="resource-card">
-      <h3>💡 Examples</h3>
-      <p>Sample projects and code snippets demonstrating TIGEN's capabilities.</p>
+      <h3>💡 Code Examples</h3>
+      <p>Real-world code samples: physics scenes, particle effects, animations, audio, and more.</p>
       <a href="https://github.com/terminaljoint/TIGEN/blob/main/EXAMPLES.md" target="_blank">See Examples</a>
     </div>
     <div class="resource-card">
+      <h3>🎓 Tutorials</h3>
+      <p>Step-by-step tutorials to master TIGEN and build complete 3D web projects.</p>
+      <a href="https://github.com/terminaljoint/TIGEN/blob/main/TUTORIAL.md" target="_blank">View Tutorials</a>
+    </div>
+    <div class="resource-card">
       <h3>🚀 Quick Reference</h3>
-      <p>Cheat sheet with essential TIGEN functions, properties, and patterns.</p>
+      <p>Cheat sheet with essential TIGEN functions, properties, and common patterns.</p>
       <a href="https://github.com/terminaljoint/TIGEN/blob/main/QUICK_REFERENCE.md" target="_blank">Quick Ref</a>
     </div>
     <div class="resource-card">
-      <h3>📝 Getting Started</h3>
-      <p>New to TIGEN? Start here with an overview and basic setup instructions.</p>
-      <a href="https://github.com/terminaljoint/TIGEN/blob/main/START_HERE.md" target="_blank">Get Started</a>
-    </div>
-    <div class="resource-card">
-      <h3>🛠️ Implementation</h3>
-      <p>Technical deep-dive into TIGEN's architecture and design decisions.</p>
+      <h3>🛠️ Architecture</h3>
+      <p>Technical deep-dive into TIGEN's design, systems, and how everything works together.</p>
       <a href="https://github.com/terminaljoint/TIGEN/blob/main/IMPLEMENTATION_SUMMARY.md" target="_blank">Learn More</a>
     </div>
   </div>

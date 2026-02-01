@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started with TIGEN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b0c0e;
+      color: #ececed;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.95);
+      border-bottom: 1px solid #2a2d32;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: #00ff88;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .nav-links a:hover {
+      color: #00ff88;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 40px;
+      padding: 40px 20px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .sidebar h3 {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li {
+      margin-bottom: 8px;
+    }
+
+    .sidebar a {
+      font-size: 13px;
+      color: #aaa;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: rgba(0, 255, 136, 0.1);
+      color: #00ff88;
+    }
+
+    .content h1 {
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .content h1 span {
+      color: #00ff88;
+    }
+
+    .content h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 50px;
+      margin-bottom: 20px;
+      color: #00ff88;
+    }
+
+    .content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+
+    .content p {
+      margin-bottom: 15px;
+      color: #aaa;
+    }
+
+    .content ul,
+    .content ol {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    .content li {
+      margin-bottom: 8px;
+      color: #aaa;
+    }
+
+    .code-block {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      padding: 20px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #00ff88;
+      line-height: 1.6;
+    }
+
+    .note {
+      background: rgba(0, 255, 136, 0.1);
+      border-left: 3px solid #00ff88;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .note strong {
+      color: #00ff88;
+    }
+
+    footer {
+      background: #000;
+      border-top: 1px solid #2a2d32;
+      padding: 30px 20px;
+      text-align: center;
+      color: #666;
+      margin-top: 80px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+      }
+
+      .content h1 {
+        font-size: 24px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo">TIGEN Docs</div>
+    <ul class="nav-links">
+      <li><a href="index.html">← Back to Home</a></li>
+      <li><a href="docs-api.html">API Reference</a></li>
+      <li><a href="https://github.com/terminaljoint/TIGEN" target="_blank">GitHub</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <h3>Getting Started</h3>
+    <ul>
+      <li><a href="#intro" class="active">Introduction</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="#core-concepts">Core Concepts</a></li>
+      <li><a href="#first-scene">First Scene</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#systems">Systems</a></li>
+    </ul>
+    <h3 style="margin-top: 30px;">Resources</h3>
+    <ul>
+      <li><a href="docs-api.html">API Reference</a></li>
+      <li><a href="https://github.com/terminaljoint/TIGEN/blob/main/EXAMPLES.md" target="_blank">Examples</a></li>
+      <li><a href="https://github.com/terminaljoint/TIGEN/blob/main/TUTORIAL.md" target="_blank">Tutorials</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <h1>Getting Started with <span>TIGEN</span></h1>
+
+    <section id="intro">
+      <h2>What is TIGEN?</h2>
+      <p>TIGEN is a lightweight, modular 3D engine for the web. It lets you build games, visualizations, and interactive experiences entirely in JavaScript with no backend required.</p>
+      <p>Built on top of Three.js and modern web APIs, TIGEN provides:</p>
+      <ul>
+        <li><strong>PBR Renderer:</strong> Physically-based rendering for realistic materials</li>
+        <li><strong>Physics Engine:</strong> Collision detection and rigid body dynamics</li>
+        <li><strong>Spatial Audio:</strong> 3D sound positioning</li>
+        <li><strong>Entity-Component System:</strong> Flexible architecture for game logic</li>
+        <li><strong>Particle System:</strong> GPU-accelerated effects</li>
+        <li><strong>Animation System:</strong> Skeletal and transform animations</li>
+      </ul>
+    </section>
+
+    <section id="setup">
+      <h2>Setup & Installation</h2>
+      <h3>Step 1: Clone the Repository</h3>
+      <div class="code-block">git clone https://github.com/terminaljoint/TIGEN.git<br>cd TIGEN</div>
+
+      <h3>Step 2: Start a Local Server</h3>
+      <p>TIGEN requires a local server (it won't run with file://):</p>
+      <div class="code-block">python3 -m http.server 8000</div>
+      <p>Or if you prefer Node:</p>
+      <div class="code-block">npx http-server</div>
+
+      <h3>Step 3: Open in Browser</h3>
+      <p>Navigate to <strong>http://localhost:8000</strong> and you'll see the full TIGEN sandbox editor.</p>
+
+      <div class="note">
+        <strong>Note:</strong> The main interface you see is the built-in editor/sandbox. To create your own project, create a new HTML file in the TIGEN directory and follow the "First Scene" section below.
+      </div>
+    </section>
+
+    <section id="core-concepts">
+      <h2>Core Concepts</h2>
+
+      <h3>Entity-Component-System (ECS)</h3>
+      <p>TIGEN uses an ECS architecture where:</p>
+      <ul>
+        <li><strong>Entities</strong> are containers for components (e.g., a cube, a light, a camera)</li>
+        <li><strong>Components</strong> define behavior and properties (e.g., transform, physics, renderer)</li>
+        <li><strong>Systems</strong> operate on entities with specific components (e.g., physics updates, rendering)</li>
+      </ul>
+
+      <h3>Scene Graph</h3>
+      <p>Entities form a hierarchical tree. Transform changes propagate down to children, making it easy to build complex objects from simpler parts.</p>
+
+      <h3>The Game Loop</h3>
+      <p>Every frame, TIGEN:</p>
+      <ol>
+        <li>Processes input</li>
+        <li>Updates physics and animations</li>
+        <li>Executes custom scripts</li>
+        <li>Renders the scene</li>
+      </ol>
+
+      <h3>Assets</h3>
+      <p>TIGEN supports loading:</p>
+      <ul>
+        <li>3D models (glTF/GLB format)</li>
+        <li>Textures (PNG, JPG, HDR)</li>
+        <li>Audio files (OGG, MP3, WAV)</li>
+        <li>Custom materials and shaders</li>
+      </ul>
+    </section>
+
+    <section id="first-scene">
+      <h2>Create Your First Scene</h2>
+
+      <h3>Basic HTML Setup</h3>
+      <div class="code-block">&lt;!DOCTYPE html&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>  &lt;title&gt;My TIGEN Project&lt;/title&gt;<br>  &lt;meta charset="UTF-8"&gt;<br>  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;<br>  &lt;style&gt;<br>    body { margin: 0; background: #000; }<br>    #app { width: 100vw; height: 100vh; }<br>  &lt;/style&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>  &lt;div id="app"&gt;&lt;/div&gt;<br>  &lt;script type="module" src="main.js"&gt;&lt;/script&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</div>
+
+      <h3>JavaScript: main.js</h3>
+      <div class="code-block">import { Engine, Scene } from './scene.js';<br><br>const engine = new Engine();<br>const scene = new Scene(engine);<br><br>// Create a cube<br>const cube = scene.create({<br>  geometry: 'box',<br>  material: {<br>    color: 0x00ff88,<br>    metallic: 0.8,<br>    roughness: 0.2<br>  },<br>  transform: {<br>    position: [0, 1, 0],<br>    rotation: [0.2, 0.5, 0],<br>    scale: [1, 1, 1]<br>  }<br>});<br><br>// Add a light<br>scene.create({<br>  type: 'light',<br>  light: { type: 'directional', intensity: 1 },<br>  transform: { position: [5, 10, 5] }<br>});<br><br>engine.run();</div>
+
+      <div class="note">
+        <strong>Pro Tip:</strong> The cube will render with PBR materials in real-time. Try adjusting the metallic and roughness values between 0-1 to see the material change.
+      </div>
+    </section>
+
+    <section id="components">
+      <h2>Working with Components</h2>
+
+      <h3>Transform Component</h3>
+      <p>Every entity has a transform for positioning:</p>
+      <div class="code-block">const entity = scene.create({<br>  transform: {<br>    position: [0, 0, 0],<br>    rotation: [0, 0, 0],<br>    scale: [1, 1, 1]<br>  }<br>});<br><br>// Modify after creation<br>entity.transform.position[1] += 0.1;</div>
+
+      <h3>Physics Component</h3>
+      <p>Add physics to entities for realistic interactions:</p>
+      <div class="code-block">entity.addComponent('physics', {<br>  type: 'rigid',<br>  mass: 1,<br>  friction: 0.5,<br>  collider: {<br>    type: 'box',<br>    size: [1, 1, 1]<br>  }<br>});</div>
+
+      <h3>Renderer Component</h3>
+      <p>Control how an entity looks:</p>
+      <div class="code-block">entity.addComponent('renderer', {<br>  geometry: 'sphere',<br>  material: {<br>    color: 0xff0000,<br>    emissive: 0x441111,<br>    metallic: 0.5<br>  }<br>});</div>
+
+      <h3>Animation Component</h3>
+      <p>Animate transforms over time:</p>
+      <div class="code-block">entity.addComponent('animation', {<br>  targetProperty: 'rotation.y',<br>  endValue: Math.PI * 2,<br>  duration: 3,<br>  loop: true<br>});</div>
+
+      <h3>Audio Component</h3>
+      <p>Play spatial 3D audio:</p>
+      <div class="code-block">entity.addComponent('audio', {<br>  source: 'sounds/explosion.ogg',<br>  volume: 1,<br>  maxDistance: 50<br>});</div>
+    </section>
+
+    <section id="systems">
+      <h2>Understanding Systems</h2>
+
+      <h3>Built-in Systems</h3>
+      <p>TIGEN runs several systems each frame:</p>
+      <ul>
+        <li><strong>Physics System:</strong> Updates rigid bodies, detects collisions</li>
+        <li><strong>Animation System:</strong> Advances time-based animations</li>
+        <li><strong>Audio System:</strong> Updates 3D audio positioning</li>
+        <li><strong>Rendering System:</strong> Renders all visible entities</li>
+        <li><strong>Scripting System:</strong> Runs custom update functions</li>
+      </ul>
+
+      <h3>Custom Update Loops</h3>
+      <p>Add custom logic that runs every frame:</p>
+      <div class="code-block">engine.onUpdate(() => {<br>  // Your custom logic here<br>  cube.transform.rotation[1] += 0.01;<br>});</div>
+
+      <div class="note">
+        <strong>Note:</strong> Frame rate is typically 60 FPS. Use deltaTime if you have time-sensitive updates.
+      </div>
+
+      <h3>Event System</h3>
+      <p>Listen for physics collisions and other events:</p>
+      <div class="code-block">entity.on('collision', (other) => {<br>  console.log('Collided with:', other.name);<br>});</div>
+    </section>
+
+    <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #2a2d32;">
+      <p style="color: #666; font-size: 13px;">Next: Check out the <a href="docs-api.html">API Reference</a> for detailed method documentation.</p>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <p>&copy; 2026 TIGEN. Open Source. MIT License.</p>
+</footer>
+
+</body>
+</html>

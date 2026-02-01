@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIGEN API Reference</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b0c0e;
+      color: #ececed;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.95);
+      border-bottom: 1px solid #2a2d32;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: #00ff88;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .nav-links a:hover {
+      color: #00ff88;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 40px;
+      padding: 40px 20px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .sidebar h3 {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 15px;
+      margin-top: 30px;
+    }
+
+    .sidebar h3:first-child {
+      margin-top: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li {
+      margin-bottom: 8px;
+    }
+
+    .sidebar a {
+      font-size: 13px;
+      color: #aaa;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: rgba(0, 255, 136, 0.1);
+      color: #00ff88;
+    }
+
+    .content h1 {
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 20px;
+    }
+
+    .content h1 span {
+      color: #00ff88;
+    }
+
+    .content h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 50px;
+      margin-bottom: 20px;
+      color: #00ff88;
+    }
+
+    .content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+
+    .api-block {
+      background: #15171a;
+      border: 1px solid #2a2d32;
+      padding: 20px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #00ff88;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .api-signature {
+      color: #8be9fd;
+      margin-bottom: 10px;
+    }
+
+    .api-params {
+      color: #aaa;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .content p {
+      margin-bottom: 15px;
+      color: #aaa;
+    }
+
+    .content ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    .content li {
+      margin-bottom: 8px;
+      color: #aaa;
+    }
+
+    .note {
+      background: rgba(0, 255, 136, 0.1);
+      border-left: 3px solid #00ff88;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    .note strong {
+      color: #00ff88;
+    }
+
+    footer {
+      background: #000;
+      border-top: 1px solid #2a2d32;
+      padding: 30px 20px;
+      text-align: center;
+      color: #666;
+      margin-top: 80px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+      }
+
+      .content h1 {
+        font-size: 24px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo">TIGEN API</div>
+    <ul class="nav-links">
+      <li><a href="index.html">← Back to Home</a></li>
+      <li><a href="docs-getting-started.html">Getting Started</a></li>
+      <li><a href="https://github.com/terminaljoint/TIGEN" target="_blank">GitHub</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <h3>Core Classes</h3>
+    <ul>
+      <li><a href="#engine" class="active">Engine</a></li>
+      <li><a href="#scene">Scene</a></li>
+      <li><a href="#entity">Entity</a></li>
+      <li><a href="#transform">Transform</a></li>
+    </ul>
+    <h3>Components</h3>
+    <ul>
+      <li><a href="#renderer">Renderer</a></li>
+      <li><a href="#physics">Physics</a></li>
+      <li><a href="#audio">Audio</a></li>
+      <li><a href="#animation">Animation</a></li>
+      <li><a href="#particles">Particles</a></li>
+    </ul>
+    <h3>Systems</h3>
+    <ul>
+      <li><a href="#input">Input</a></li>
+      <li><a href="#scripting">Scripting</a></li>
+      <li><a href="#assets">Assets</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <h1><span>TIGEN</span> API Reference</h1>
+    <p style="color: #aaa; margin-bottom: 40px;">Complete reference for all TIGEN classes, methods, and properties.</p>
+
+    <!-- Engine -->
+    <section id="engine">
+      <h2>Engine</h2>
+      <p>The main engine class that manages the game loop, rendering, and systems.</p>
+
+      <h3>Constructor</h3>
+      <div class="api-block">
+        <div class="api-signature">new Engine(config)</div>
+        <div class="api-params">Parameters:<br>
+        config.canvas {HTMLCanvasElement} - Target canvas (auto-created if omitted)<br>
+        config.width {number} - Canvas width (default: window.innerWidth)<br>
+        config.height {number} - Canvas height (default: window.innerHeight)
+        </div>
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">engine.run()</div>
+        Start the engine and main game loop.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">engine.stop()</div>
+        Stop the engine and game loop.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">engine.onUpdate(callback)</div>
+        <div class="api-params">
+        Callback: (deltaTime) => void<br>
+        Register a function to run every frame.
+        </div>
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">engine.getScene()</div>
+        <div class="api-params">Returns: Scene - The active scene.</div>
+      </div>
+    </section>
+
+    <!-- Scene -->
+    <section id="scene">
+      <h2>Scene</h2>
+      <p>Container for entities and the 3D world.</p>
+
+      <h3>Constructor</h3>
+      <div class="api-block">
+        <div class="api-signature">new Scene(engine, config)</div>
+        <div class="api-params">Parameters:<br>
+        engine {Engine} - Parent engine<br>
+        config.background {number} - Background color (hex, default: 0x000000)
+        </div>
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">scene.create(config)</div>
+        <div class="api-params">
+        Create and return a new entity.<br>
+        Returns: Entity
+        </div>
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">scene.find(name)</div>
+        <div class="api-params">
+        Find entity by name.<br>
+        Returns: Entity | null
+        </div>
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">scene.destroy(entity)</div>
+        Remove entity from scene.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">scene.getEntities()</div>
+        <div class="api-params">
+        Get all entities in scene.<br>
+        Returns: Entity[]
+        </div>
+      </div>
+    </section>
+
+    <!-- Entity -->
+    <section id="entity">
+      <h2>Entity</h2>
+      <p>Base object in TIGEN. Containers for components.</p>
+
+      <h3>Properties</h3>
+      <div class="api-block">
+        entity.name {string} - Entity identifier<br>
+        entity.transform {Transform} - Position, rotation, scale<br>
+        entity.active {boolean} - Whether entity updates each frame
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">entity.addComponent(name, config)</div>
+        <div class="api-params">
+        Attach a component to entity.<br>
+        Returns: Component
+        </div>
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">entity.getComponent(name)</div>
+        <div class="api-params">
+        Retrieve a component.<br>
+        Returns: Component | null
+        </div>
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">entity.removeComponent(name)</div>
+        Detach a component.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">entity.on(eventName, callback)</div>
+        Listen for events (e.g., 'collision').
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">entity.emit(eventName, data)</div>
+        Trigger an event.
+      </div>
+    </section>
+
+    <!-- Transform -->
+    <section id="transform">
+      <h2>Transform</h2>
+      <p>Manages position, rotation, and scale.</p>
+
+      <h3>Properties</h3>
+      <div class="api-block">
+        transform.position {[x, y, z]} - World position<br>
+        transform.rotation {[x, y, z]} - Euler angles (radians)<br>
+        transform.scale {[x, y, z]} - Scale factors<br>
+        transform.parent {Entity} - Parent entity (for hierarchy)
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">transform.setPosition(x, y, z)</div>
+        Update position.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">transform.setRotation(x, y, z)</div>
+        Update rotation (in radians).
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">transform.setScale(x, y, z)</div>
+        Update scale.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">transform.translate(x, y, z)</div>
+        Move relative to current position.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">transform.lookAt(target)</div>
+        <div class="api-params">
+        target {[x, y, z]} | Entity<br>
+        Orient entity to face target.
+        </div>
+      </div>
+    </section>
+
+    <!-- Renderer -->
+    <section id="renderer">
+      <h2>Renderer Component</h2>
+      <p>Controls visual appearance with PBR materials.</p>
+
+      <h3>Setup</h3>
+      <div class="api-block">
+entity.addComponent('renderer', {<br>
+&nbsp;&nbsp;geometry: 'box',  // or 'sphere', 'plane', 'cylinder'<br>
+&nbsp;&nbsp;material: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;color: 0x00ff88,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;metallic: 0.5,    // 0-1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;roughness: 0.5,   // 0-1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;emissive: 0x000000<br>
+&nbsp;&nbsp;}<br>
+});
+      </div>
+
+      <h3>Properties</h3>
+      <div class="api-block">
+        renderer.visible {boolean} - Show/hide entity<br>
+        renderer.castShadow {boolean} - Cast shadows<br>
+        renderer.receiveShadow {boolean} - Receive shadows
+      </div>
+    </section>
+
+    <!-- Physics -->
+    <section id="physics">
+      <h2>Physics Component</h2>
+      <p>Rigid body dynamics and collision detection.</p>
+
+      <h3>Setup</h3>
+      <div class="api-block">
+entity.addComponent('physics', {<br>
+&nbsp;&nbsp;type: 'rigid',     // 'rigid', 'static', 'kinematic'<br>
+&nbsp;&nbsp;mass: 1,<br>
+&nbsp;&nbsp;friction: 0.5,<br>
+&nbsp;&nbsp;restitution: 0.2,  // bounciness<br>
+&nbsp;&nbsp;collider: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type: 'box',   // 'box', 'sphere'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;size: [1, 1, 1]<br>
+&nbsp;&nbsp;}<br>
+});
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">physics.applyForce(x, y, z)</div>
+        Apply impulse-based force.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">physics.setVelocity(x, y, z)</div>
+        Set linear velocity directly.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">entity.on('collision', (other) => {})</div>
+        Listen for collisions.
+      </div>
+    </section>
+
+    <!-- Audio -->
+    <section id="audio">
+      <h2>Audio Component</h2>
+      <p>Spatial 3D audio with attenuation.</p>
+
+      <h3>Setup</h3>
+      <div class="api-block">
+entity.addComponent('audio', {<br>
+&nbsp;&nbsp;source: 'sounds/effect.ogg',<br>
+&nbsp;&nbsp;volume: 0.8,<br>
+&nbsp;&nbsp;loop: false,<br>
+&nbsp;&nbsp;maxDistance: 50<br>
+});
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">audio.play()</div>
+        Start playback.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">audio.pause()</div>
+        Pause playback.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">audio.stop()</div>
+        Stop and reset.
+      </div>
+    </section>
+
+    <!-- Animation -->
+    <section id="animation">
+      <h2>Animation Component</h2>
+      <p>Time-based animations for transforms.</p>
+
+      <h3>Setup</h3>
+      <div class="api-block">
+entity.addComponent('animation', {<br>
+&nbsp;&nbsp;targetProperty: 'rotation.y',<br>
+&nbsp;&nbsp;startValue: 0,<br>
+&nbsp;&nbsp;endValue: Math.PI * 2,<br>
+&nbsp;&nbsp;duration: 3,    // seconds<br>
+&nbsp;&nbsp;easing: 'linear', // 'easeInOut', etc<br>
+&nbsp;&nbsp;loop: true<br>
+});
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">animation.play()</div>
+        Start animation.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">animation.pause()</div>
+        Pause animation.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">animation.reset()</div>
+        Reset to start.
+      </div>
+    </section>
+
+    <!-- Particles -->
+    <section id="particles">
+      <h2>Particles Component</h2>
+      <p>GPU-accelerated particle effects.</p>
+
+      <h3>Setup</h3>
+      <div class="api-block">
+entity.addComponent('particles', {<br>
+&nbsp;&nbsp;count: 1000,<br>
+&nbsp;&nbsp;lifetime: 2,<br>
+&nbsp;&nbsp;emissionRate: 100,<br>
+&nbsp;&nbsp;velocity: [0, 1, 0],<br>
+&nbsp;&nbsp;material: { color: 0xff0000 }<br>
+});
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">particles.emit(count)</div>
+        Emit particles immediately.
+      </div>
+    </section>
+
+    <!-- Input -->
+    <section id="input">
+      <h2>Input System</h2>
+      <p>Keyboard, mouse, and gamepad input.</p>
+
+      <h3>Usage</h3>
+      <div class="api-block">
+import { Input } from './input.js';<br>
+<br>
+engine.onUpdate(() => {<br>
+&nbsp;&nbsp;if (Input.isKeyDown('w')) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Move forward<br>
+&nbsp;&nbsp;}<br>
+});
+      </div>
+
+      <h3>Methods</h3>
+      <div class="api-block">
+        <div class="api-signature">Input.isKeyDown(key)</div>
+        Check if key is currently pressed.
+      </div>
+
+      <div class="api-block">
+        <div class="api-signature">Input.getMousePosition()</div>
+        <div class="api-params">
+        Returns: {x, y} - Mouse coordinates
+        </div>
+      </div>
+    </section>
+
+    <!-- Scripting -->
+    <section id="scripting">
+      <h2>Scripting Component</h2>
+      <p>Custom update logic for entities.</p>
+
+      <h3>Setup</h3>
+      <div class="api-block">
+entity.addComponent('script', {<br>
+&nbsp;&nbsp;onUpdate: (entity, deltaTime) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Custom logic<br>
+&nbsp;&nbsp;}<br>
+});
+      </div>
+    </section>
+
+    <!-- Assets -->
+    <section id="assets">
+      <h2>Assets System</h2>
+      <p>Load 3D models, textures, and audio.</p>
+
+      <h3>Loading Models</h3>
+      <div class="api-block">
+import { Assets } from './assets.js';<br>
+<br>
+const model = await Assets.loadModel('models/character.glb');<br>
+scene.add(model);
+      </div>
+
+      <h3>Loading Textures</h3>
+      <div class="api-block">
+const texture = await Assets.loadTexture('textures/metal.png');<br>
+entity.getComponent('renderer').material.map = texture;
+      </div>
+    </section>
+
+    <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #2a2d32;">
+      <p style="color: #666; font-size: 13px;">For examples and tutorials, see <a href="docs-getting-started.html">Getting Started</a> or visit <a href="https://github.com/terminaljoint/TIGEN/blob/main/API_REFERENCE.md" target="_blank">the full API docs on GitHub</a>.</p>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <p>&copy; 2026 TIGEN. Open Source. MIT License.</p>
+</footer>
+
+</body>
+</html>
