@@ -32,8 +32,8 @@ class TIGEN_Editor {
     const camera = cameraEntity.addComponent(Camera);
     const controller = cameraEntity.addComponent(FreeCameraController);
     
-    if (typeof TIGEN_Outliner !== 'undefined') {
-      TIGEN_Outliner.setScene(this.scene);
+    if (window.TIGEN_Outliner) {
+      window.TIGEN_Outliner.setScene(this.scene);
     }
   }
 
@@ -102,10 +102,12 @@ class TIGEN_Editor {
       if (e.code === 'Delete' && this.selectedEntity) {
         this.scene.removeEntity(this.selectedEntity);
         this.selectedEntity = null;
-        TIGEN_Inspector.selected = null;
-        TIGEN_Inspector.refresh();
-        if (typeof TIGEN_Outliner !== 'undefined') {
-          TIGEN_Outliner.refresh();
+        if (window.TIGEN_Inspector) {
+          window.TIGEN_Inspector.selected = null;
+          window.TIGEN_Inspector.refresh();
+        }
+        if (window.TIGEN_Outliner) {
+          window.TIGEN_Outliner.refresh();
         }
       }
     });
@@ -124,9 +126,11 @@ class TIGEN_Editor {
 
   selectEntity(entity) {
     this.selectedEntity = entity;
-    TIGEN_Inspector.select(entity);
-    if (typeof TIGEN_Outliner !== 'undefined') {
-      TIGEN_Outliner.refresh();
+    if (window.TIGEN_Inspector) {
+      window.TIGEN_Inspector.select(entity);
+    }
+    if (window.TIGEN_Outliner) {
+      window.TIGEN_Outliner.refresh();
     }
   }
 
@@ -156,8 +160,8 @@ class TIGEN_Editor {
     this.physicsEngine.registerBody(physics);
     this.physicsEngine.registerCollider(collider);
     
-    if (typeof TIGEN_Outliner !== 'undefined') {
-      TIGEN_Outliner.refresh();
+    if (window.TIGEN_Outliner) {
+      window.TIGEN_Outliner.refresh();
     }
   }
 
@@ -184,10 +188,12 @@ class TIGEN_Editor {
     if (!confirm("Clear world?")) return;
     this.scene.clear();
     this.selectedEntity = null;
-    TIGEN_Inspector.selected = null;
-    TIGEN_Inspector.refresh();
-    if (typeof TIGEN_Outliner !== 'undefined') {
-      TIGEN_Outliner.refresh();
+    if (window.TIGEN_Inspector) {
+      window.TIGEN_Inspector.selected = null;
+      window.TIGEN_Inspector.refresh();
+    }
+    if (window.TIGEN_Outliner) {
+      window.TIGEN_Outliner.refresh();
     }
   }
 
