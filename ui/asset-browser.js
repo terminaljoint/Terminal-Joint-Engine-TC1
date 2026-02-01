@@ -19,6 +19,10 @@
       mgr.assets.forEach((asset, key) => {
         const t = document.createElement('div'); t.className='asset-thumb';
         t.title = key;
+        t.draggable = true;
+        t.addEventListener('dragstart', (ev)=>{
+          ev.dataTransfer.setData('text/plain', key);
+        });
         if (asset && asset.isTexture){
           const img = document.createElement('img'); img.src = asset.image ? asset.image.src : ''; img.style.maxWidth='100%'; img.style.maxHeight='100%'; t.appendChild(img);
         } else if (asset && asset.scene){

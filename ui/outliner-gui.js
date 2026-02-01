@@ -25,6 +25,9 @@
           el.classList.add('selected');
           document.dispatchEvent(new CustomEvent('entitySelected',{detail:{entity}}));
         };
+        // Accept asset drops
+        el.addEventListener('dragover', (e)=>{ e.preventDefault(); });
+        el.addEventListener('drop', (e)=>{ e.preventDefault(); const key = e.dataTransfer.getData('text/plain'); document.dispatchEvent(new CustomEvent('assetDropped',{detail:{entity, key}})); });
         list.appendChild(el);
       });
     }
