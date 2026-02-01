@@ -223,19 +223,26 @@ class AdvancedRenderer {
     viewport.appendChild(this.renderer.domElement);
 
     // Post-processing
-    this.composer = new THREE.EffectComposer(this.renderer);
-    this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
-    
-    // Effects
-    this.setupEffects();
+    this.composer = null;
+    try {
+      if (typeof THREE.EffectComposer !== 'undefined' && typeof THREE.RenderPass !== 'undefined') {
+        this.composer = new THREE.EffectComposer(this.renderer);
+        this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+        this.setupEffects();
+      }
+    } catch (e) {
+      console.warn("Post-processing disabled due to missing dependencies:", e);
+    }
 
     window.addEventListener('resize', () => this.onWindowResize());
   }
 
   setupEffects() {
     // Add bloom effect for better visuals
-    const bloomPass = new THREE.BloomPass(0.5, 25, 4, 256);
-    this.composer.addPass(bloomPass);
+    if (this.composer && typeof THREE.BloomPass !== 'undefined') {
+      const bloomPass = new THREE.BloomPass(0.5, 25, 4, 256);
+      this.composer.addPass(bloomPass);
+    }
   }
 
   onWindowResize() {
@@ -244,10 +251,16 @@ class AdvancedRenderer {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
-    this.composer.setSize(width, height);
+    if (this.composer) {
+      this.composer.setSize(width, height);
+    }
   }
 
   draw() {
-    this.composer.render();
+    if (this.composer) {
+      this.composer.render();
+    } else {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 }
