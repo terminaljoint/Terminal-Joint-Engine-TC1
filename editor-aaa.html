@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TIGEN - AAA Editor</title>
+  <title>TIDGE - Terminal joint Intelligence Development Game Engine Editor</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; font-family: 'Monaco', monospace; background: #0a0b0d; color: #ececed; overflow: hidden; }
@@ -161,7 +161,7 @@
 <body>
   <div class="layout">
     <div class="header">
-      <div class="title">🎮 TIGEN - AAA Editor</div>
+      <div class="title">🎮 TIDGE - Terminal joint Intelligence Development Game Engine Editor</div>
       <div class="stats">
         <div class="stat">Entities: <span id="entityCount">0</span></div>
         <div class="stat">FPS: <span id="fpsCount">0</span></div>
@@ -188,6 +188,9 @@
 
         <div class="asset-category">Meshes</div>
         <div id="meshesList"></div>
+
+        <div class="asset-category">Entities</div>
+        <div id="entityList"></div>
       </div>
     </div>
 
@@ -247,14 +250,18 @@
 
       gameLoop.setCallback(update);
       gameLoop.start();
+      isPlaying = true;
+      document.getElementById('playBtn').textContent = '⏸ Stop';
 
       updateUI();
       log('Editor initialized', 'success');
     }
 
-    function update(dt) {
-      scene.update(dt);
-      if (isTimelinePlay && selectedEntity && selectedEntity.animationController.currentClip) {
+    function update(dt, isFixed) {
+      if (isFixed) {
+        scene.update(dt);
+      }
+      if (!isFixed && isTimelinePlay && selectedEntity && selectedEntity.animationController.currentClip) {
         timelineTime += dt;
         document.getElementById('timelineSlider').value = timelineTime;
         document.getElementById('timelineTime').textContent = timelineTime.toFixed(1) + 's';
@@ -262,9 +269,11 @@
           timelineTime = 0;
         }
       }
-      renderer.render(scene);
-      document.getElementById('entityCount').textContent = scene.entities.length;
-      document.getElementById('fpsCount').textContent = gameLoop.fps;
+      if (!isFixed) {
+        renderer.render(scene);
+        document.getElementById('entityCount').textContent = scene.entities.length;
+        document.getElementById('fpsCount').textContent = gameLoop.fps;
+      }
     }
 
     // ===== CREATION =====
@@ -304,6 +313,21 @@
     }
 
     // ===== SELECTION =====
+    function selectEntity(entity) {
+      if (selectedEntity) selectedEntity.selected = false;
+      selectedEntity = entity;
+      if (selectedEntity) {
+        selectedEntity.selected = true;
+        log(`Selected: ${selectedEntity.name}`, 'info');
+      }
+      updateInspector();
+    }
+
+    function selectEntityById(id) {
+      const entity = scene.entities.find(e => e.id === id);
+      if (entity) selectEntity(entity);
+    }
+
     const canvas = document.getElementById('viewport');
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -316,18 +340,12 @@
         const s = Math.max(entity.transform.scale.x, entity.transform.scale.z) * renderer.zoom;
 
         if (mx > ex - s / 2 && mx < ex + s / 2 && my > ey - s / 2 && my < ey + s / 2) {
-          if (selectedEntity) selectedEntity.selected = false;
-          selectedEntity = entity;
-          entity.selected = true;
-          updateInspector();
-          log(`Selected: ${entity.name}`, 'info');
+          selectEntity(entity);
           return;
         }
       }
 
-      if (selectedEntity) selectedEntity.selected = false;
-      selectedEntity = null;
-      updateInspector();
+      selectEntity(null);
     });
 
     let dragging = false;
@@ -363,7 +381,7 @@
       inspector.innerHTML = `
         <div class="property">
           <div class="property-label">Name</div>
-          <input type="text" value="${selectedEntity.name}" onchange="selectedEntity.name = this.value; updateInspector();">
+          <input type="text" value="${selectedEntity.name}" onchange="selectedEntity.name = this.value; updateInspector(); updateUI();">
         </div>
 
         <div class="property">
@@ -409,6 +427,13 @@
         html += `<div class="asset-item" onclick="log('Mesh: ' + '${mesh}')">${mesh}</div>`;
       }
       document.getElementById('meshesList').innerHTML = html;
+
+      // Entities
+      html = '';
+      for (const entity of scene.entities) {
+        html += `<div class="asset-item" onclick="selectEntityById(${entity.id})">${entity.name}</div>`;
+      }
+      document.getElementById('entityList').innerHTML = html || '<div style=\"color: #666; font-size: 11px;\">No entities yet</div>';
     }
 
     // ===== ANIMATION =====
@@ -448,6 +473,11 @@
     function togglePlay() {
       isPlaying = !isPlaying;
       document.getElementById('playBtn').textContent = isPlaying ? '⏸ Stop' : '▶ Play';
+      if (isPlaying) {
+        gameLoop.resume();
+      } else {
+        gameLoop.pause();
+      }
     }
 
     function toggleGrid() {
@@ -472,12 +502,12 @@
     // ===== SAVE/LOAD =====
     function editorSave() {
       const data = scene.serialize();
-      localStorage.setItem('tigen_scene', JSON.stringify(data));
+      localStorage.setItem('tidge_scene', JSON.stringify(data));
       log('Scene saved ✓', 'success');
     }
 
     function editorLoad() {
-      const data = localStorage.getItem('tigen_scene');
+      const data = localStorage.getItem('tidge_scene');
       if (data) {
         scene.deserialize(JSON.parse(data));
         updateUI();
