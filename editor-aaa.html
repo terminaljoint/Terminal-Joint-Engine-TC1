@@ -185,6 +185,7 @@
   <div class="layout">
     <div class="header">
       <div class="title">🎮 TIDGE 3D Editor</div>
+      <div class="title">🎮 TIDGE - Terminal joint Intelligence Development Game Engine Editor</div>
       <div class="stats">
         <div class="stat">Entities: <span id="entityCount">0</span></div>
         <div class="stat">FPS: <span id="fpsCount">0</span></div>
@@ -433,6 +434,124 @@
       overlayCtx.moveTo(start.x, start.y);
       overlayCtx.lineTo(end.x, end.y);
       overlayCtx.stroke();
+      }
+      if (camera) camera.aspect = canvas.width / canvas.height;
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvases();
+    });
+
+    function createDefaultScene() {
+      const ground = scene.createEntity('Ground');
+      ground.setMesh(new Geometry('plane', { width: 12, depth: 12 }), new Material('Ground', { r: 0.2, g: 0.8, b: 0.6 }));
+      ground.transform.position.y = -1.2;
+      ground.transform.rotation.x = 0;
+
+      const cube = scene.createEntity('Cube');
+      cube.setMesh(new Geometry('box', { size: 1 }), new Material('Green', { r: 0, g: 1, b: 0.8 }));
+      cube.rigidBody = new RigidBody(1);
+
+      const sphere = scene.createEntity('Sphere');
+      sphere.setMesh(new Geometry('sphere', { radius: 0.7 }), new Material('Red', { r: 1, g: 0.2, b: 0.3 }));
+      sphere.transform.position.x = 2;
+      sphere.rigidBody = new RigidBody(1);
+    }
+
+    function update(dt, isFixed) {
+      if (isFixed) {
+        scene.update(dt);
+        physicsSystem.gravity = config.gravity;
+        physicsSystem.update(scene.entities, dt);
+        scriptSystem.update(scene.entities, dt);
+      }
+
+      if (!isFixed) {
+        cameraController.update(dt, inputSystem);
+        glRenderer.render(scene, camera, lights);
+        drawOverlay();
+        document.getElementById('entityCount').textContent = scene.entities.length;
+        document.getElementById('fpsCount').textContent = gameLoop.fps;
+        inputSystem.endFrame();
+      }
+    }
+
+    function drawOverlay() {
+      if (!overlayCtx) return;
+      overlayCtx.clearRect(0, 0, overlayCtx.canvas.width, overlayCtx.canvas.height);
+      if (!showDebug) return;
+      for (const entity of scene.entities) {
+        if (entity.aabb) drawAABB(entity.aabb);
+      }
+      const debug = physicsSystem.debug;
+      for (const ray of debug.rays) {
+        drawRay(ray);
+      }
+      debug.rays.length = 0;
+    }
+
+    function projectPoint(point) {
+      const vp = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
+      const clip = Matrix4.transformVec4(vp, [point.x, point.y, point.z, 1]);
+      if (clip[3] === 0) return null;
+      const ndc = [clip[0] / clip[3], clip[1] / clip[3]];
+      const x = (ndc[0] * 0.5 + 0.5) * overlayCtx.canvas.width;
+      const y = (-ndc[1] * 0.5 + 0.5) * overlayCtx.canvas.height;
+      return { x, y };
+    }
+
+    function drawAABB(aabb) {
+      const corners = [
+        new Vec3(aabb.min.x, aabb.min.y, aabb.min.z),
+        new Vec3(aabb.max.x, aabb.min.y, aabb.min.z),
+        new Vec3(aabb.max.x, aabb.max.y, aabb.min.z),
+        new Vec3(aabb.min.x, aabb.max.y, aabb.min.z),
+        new Vec3(aabb.min.x, aabb.min.y, aabb.max.z),
+        new Vec3(aabb.max.x, aabb.min.y, aabb.max.z),
+        new Vec3(aabb.max.x, aabb.max.y, aabb.max.z),
+        new Vec3(aabb.min.x, aabb.max.y, aabb.max.z)
+      ];
+      const projected = corners.map(projectPoint).filter(Boolean);
+      if (projected.length < 4) return;
+      overlayCtx.strokeStyle = '#00ccff';
+      overlayCtx.lineWidth = 2;
+      overlayCtx.beginPath();
+      overlayCtx.moveTo(projected[0].x, projected[0].y);
+      projected.slice(1).forEach(p => overlayCtx.lineTo(p.x, p.y));
+      overlayCtx.closePath();
+      overlayCtx.stroke();
+    }
+
+    function drawRay(ray) {
+      const start = projectPoint(ray.origin);
+      const end = projectPoint(ray.origin.add(ray.direction.mul(5)));
+      if (!start || !end) return;
+      overlayCtx.strokeStyle = '#ffcc00';
+      overlayCtx.lineWidth = 2;
+      overlayCtx.beginPath();
+      overlayCtx.moveTo(start.x, start.y);
+      overlayCtx.lineTo(end.x, end.y);
+      overlayCtx.stroke();
+      log('Editor initialized', 'success');
+    }
+
+    function update(dt, isFixed) {
+      if (isFixed) {
+        scene.update(dt);
+      }
+      if (!isFixed && isTimelinePlay && selectedEntity && selectedEntity.animationController.currentClip) {
+        timelineTime += dt;
+        document.getElementById('timelineSlider').value = timelineTime;
+        document.getElementById('timelineTime').textContent = timelineTime.toFixed(1) + 's';
+        if (timelineTime >= selectedEntity.animationController.currentClip.duration) {
+          timelineTime = 0;
+        }
+      }
+      if (!isFixed) {
+        renderer.render(scene);
+        document.getElementById('entityCount').textContent = scene.entities.length;
+        document.getElementById('fpsCount').textContent = gameLoop.fps;
+      }
     }
 
     // ===== CREATION =====
@@ -483,6 +602,37 @@
       } else {
         cameraController = new FreeCamera(camera, 6);
         log('Camera set to Free mode', 'info');
+    // ===== SELECTION =====
+    function selectEntity(entity) {
+      if (selectedEntity) selectedEntity.selected = false;
+      selectedEntity = entity;
+      if (selectedEntity) {
+        selectedEntity.selected = true;
+        log(`Selected: ${selectedEntity.name}`, 'info');
+      }
+      updateInspector();
+    }
+
+    function selectEntityById(id) {
+      const entity = scene.entities.find(e => e.id === id);
+      if (entity) selectEntity(entity);
+    }
+
+    const canvas = document.getElementById('viewport');
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      for (const entity of scene.entities) {
+        const ex = renderer.width / 2 + entity.transform.position.x * renderer.zoom;
+        const ey = renderer.height / 2 - entity.transform.position.z * renderer.zoom;
+        const s = Math.max(entity.transform.scale.x, entity.transform.scale.z) * renderer.zoom;
+
+        if (mx > ex - s / 2 && mx < ex + s / 2 && my > ey - s / 2 && my < ey + s / 2) {
+          selectEntity(entity);
+          return;
+        }
       }
     }
 
@@ -490,6 +640,33 @@
       camera.type = mode;
       log(`Camera projection: ${mode}`, 'info');
     }
+
+    function resetView() {
+      camera.transform.position = new Vec3(0, 4, 8);
+      camera.transform.rotation = new Vec3(-0.4, 0, 0);
+      log('Camera reset', 'info');
+    }
+
+    // ===== DEBUG =====
+    function toggleDebug() {
+      showDebug = !showDebug;
+      document.getElementById('debugToggle').textContent = showDebug ? 'Hide Debug' : 'Show Debug';
+      log(`Debug ${showDebug ? 'enabled' : 'disabled'}`, 'info');
+    }
+
+    function castDebugRay() {
+      const forward = getCameraForward();
+      const ray = new Ray(camera.transform.position.clone(), forward);
+      physicsSystem.raycast(ray, scene.entities);
+      log('Raycast triggered', 'info');
+    }
+
+    function getCameraForward() {
+      const mat = camera.transform.getLocalMatrix();
+      const vec = Matrix4.transformVec4(mat, [0, 0, -1, 0]);
+      return new Vec3(vec[0], vec[1], vec[2]).norm();
+    }
+
 
     function resetView() {
       camera.transform.position = new Vec3(0, 4, 8);
@@ -531,6 +708,8 @@
       }
       updateInspector();
     }
+      selectEntity(null);
+    });
 
     function selectEntityById(id) {
       const entity = scene.entities.find(e => e.id === id);
@@ -637,6 +816,7 @@
         html += `<div class="asset-item" onclick="selectEntityById(${entity.id})">${entity.name}</div>`;
       }
       document.getElementById('entityList').innerHTML = html || '<div style="color: #666; font-size: 11px;">No entities yet</div>';
+      document.getElementById('entityList').innerHTML = html || '<div style=\"color: #666; font-size: 11px;\">No entities yet</div>';
     }
 
     // ===== ANIMATION =====
@@ -661,6 +841,14 @@
       } else {
         gameLoop.pause();
       }
+    }
+
+    function toggleGrid() {
+      log('Grid toggled');
+    }
+
+    function resetView() {
+      log('View reset');
     }
 
     // ===== DELETION =====

@@ -1096,6 +1096,166 @@ class WebGLRenderer {
   }
 }
 
+    }
+  }
+}
+
+// ===== WEBGL RENDERER =====
+class WebGLRenderer {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.gl = canvas.getContext('webgl');
+    this.width = canvas.width;
+    this.height = canvas.height;
+    this.program = null;
+    this.buffers = new Map();
+    this.init();
+  }
+  init() {
+    const gl = this.gl;
+    const vsSource = `
+      attribute vec3 aPosition;
+      attribute vec3 aNormal;
+      attribute vec2 aUV;
+      uniform mat4 uModel;
+      uniform mat4 uView;
+      uniform mat4 uProj;
+      varying vec3 vNormal;
+      varying vec2 vUV;
+      varying vec3 vPos;
+      void main() {
+        vec4 worldPos = uModel * vec4(aPosition, 1.0);
+        vPos = worldPos.xyz;
+        vNormal = mat3(uModel) * aNormal;
+        vUV = aUV;
+        gl_Position = uProj * uView * worldPos;
+      }
+    `;
+    const fsSource = `
+      precision mediump float;
+      uniform vec3 uColor;
+      uniform vec3 uLightDir;
+      uniform vec3 uAmbient;
+      uniform vec3 uPointPos;
+      uniform vec3 uPointColor;
+      uniform float uPointRange;
+      uniform sampler2D uTexture;
+      uniform float uUseTexture;
+      varying vec3 vNormal;
+      varying vec2 vUV;
+      varying vec3 vPos;
+      void main() {
+        vec3 n = normalize(vNormal);
+        float diff = max(dot(n, normalize(-uLightDir)), 0.0);
+        float dist = length(uPointPos - vPos);
+        float atten = clamp(1.0 - (dist / uPointRange), 0.0, 1.0);
+        vec3 pointLight = uPointColor * max(dot(n, normalize(uPointPos - vPos)), 0.0) * atten;
+        vec3 base = uColor;
+        if (uUseTexture > 0.5) {
+          base *= texture2D(uTexture, vUV).rgb;
+        }
+        vec3 color = base * (uAmbient + diff) + pointLight;
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+    this.program = this.createProgram(vsSource, fsSource);
+    gl.useProgram(this.program);
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+  }
+  createProgram(vsSource, fsSource) {
+    const gl = this.gl;
+    const vs = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vs, vsSource);
+    gl.compileShader(vs);
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, fsSource);
+    gl.compileShader(fs);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    return prog;
+  }
+  getBuffer(geometry) {
+    if (this.buffers.has(geometry)) return this.buffers.get(geometry);
+    const gl = this.gl;
+    const buffer = {
+      vao: gl.createBuffer(),
+      nbo: gl.createBuffer(),
+      tbo: gl.createBuffer(),
+      ibo: gl.createBuffer(),
+      count: geometry.indices.length
+    };
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vao);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.vertices), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.nbo);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.normals), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer.tbo);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.ibo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geometry.indices), gl.STATIC_DRAW);
+    this.buffers.set(geometry, buffer);
+    return buffer;
+  }
+  render(scene, camera, lights = {}) {
+    const gl = this.gl;
+    gl.viewport(0, 0, this.width, this.height);
+    gl.clearColor(0.05, 0.05, 0.05, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    const prog = this.program;
+    const aPosition = gl.getAttribLocation(prog, 'aPosition');
+    const aNormal = gl.getAttribLocation(prog, 'aNormal');
+    const aUV = gl.getAttribLocation(prog, 'aUV');
+    const uModel = gl.getUniformLocation(prog, 'uModel');
+    const uView = gl.getUniformLocation(prog, 'uView');
+    const uProj = gl.getUniformLocation(prog, 'uProj');
+    const uColor = gl.getUniformLocation(prog, 'uColor');
+    const uLightDir = gl.getUniformLocation(prog, 'uLightDir');
+    const uAmbient = gl.getUniformLocation(prog, 'uAmbient');
+    const uPointPos = gl.getUniformLocation(prog, 'uPointPos');
+    const uPointColor = gl.getUniformLocation(prog, 'uPointColor');
+    const uPointRange = gl.getUniformLocation(prog, 'uPointRange');
+    const uTexture = gl.getUniformLocation(prog, 'uTexture');
+    const uUseTexture = gl.getUniformLocation(prog, 'uUseTexture');
+
+    gl.uniform3f(uLightDir, lights.directional?.x ?? -1, lights.directional?.y ?? -1, lights.directional?.z ?? -1);
+    gl.uniform3f(uAmbient, lights.ambient?.r ?? 0.2, lights.ambient?.g ?? 0.2, lights.ambient?.b ?? 0.2);
+    gl.uniform3f(uPointPos, lights.point?.x ?? 0, lights.point?.y ?? 5, lights.point?.z ?? 0);
+    gl.uniform3f(uPointColor, lights.pointColor?.r ?? 1, lights.pointColor?.g ?? 1, lights.pointColor?.b ?? 1);
+    gl.uniform1f(uPointRange, lights.pointRange ?? 10);
+
+    gl.uniformMatrix4fv(uView, false, camera.getViewMatrix().m);
+    gl.uniformMatrix4fv(uProj, false, camera.getProjectionMatrix().m);
+
+    for (const entity of scene.entities) {
+      const buffer = this.getBuffer(entity.geometry);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vao);
+      gl.enableVertexAttribArray(aPosition);
+      gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer.nbo);
+      gl.enableVertexAttribArray(aNormal);
+      gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer.tbo);
+      gl.enableVertexAttribArray(aUV);
+      gl.vertexAttribPointer(aUV, 2, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.ibo);
+
+      gl.uniformMatrix4fv(uModel, false, entity.transform.getWorldMatrix().m);
+      gl.uniform3f(uColor, entity.material.color.r, entity.material.color.g, entity.material.color.b);
+      if (entity.material.texture?.glTexture) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, entity.material.texture.glTexture);
+        gl.uniform1i(uTexture, 0);
+        gl.uniform1f(uUseTexture, 1);
+      } else {
+        gl.uniform1f(uUseTexture, 0);
+      }
+      gl.drawElements(gl.TRIANGLES, buffer.count, gl.UNSIGNED_SHORT, 0);
+    }
+  }
+}
+
 // ===== 2D EDITOR RENDERER =====
 class Renderer {
   constructor(canvas) {
