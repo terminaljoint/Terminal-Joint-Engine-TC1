@@ -1,4 +1,4 @@
-# TIGEN - AAA Professional Game Engine
+# TIDGE - Terminal joint Intelligence Development Game Engine
 
 **Status: ✅ PRODUCTION READY | ALL SYSTEMS WORKING**
 
@@ -6,6 +6,8 @@
 
 A complete, fully-working professional game engine built in vanilla JavaScript. 
 **Zero external dependencies. 1,200+ lines of production code. Zero errors.**
+
+TIDGE stands for **Terminal joint Intelligence Development Game Engine** and reflects the must-have, non-negotiable engine core described below.
 
 ## 🚀 How To Use
 
@@ -31,6 +33,9 @@ A complete, fully-working professional game engine built in vanilla JavaScript.
 ✅ **Save/Load** - Scenes saved to browser local storage  
 ✅ **Console** - Real-time debug logging  
 ✅ **60 FPS** - Smooth, responsive performance  
+✅ **WebGL Renderer** - Depth testing, back-face culling, textured materials  
+✅ **Input & Physics** - Keyboard/mouse input, pointer lock, gravity, collisions  
+✅ **Core Systems** - Scene graph, components, cameras, serialization, scripts  
 
 ## 📁 Files
 
@@ -39,6 +44,25 @@ A complete, fully-working professional game engine built in vanilla JavaScript.
 - **engine-aaa.js** - Complete game engine (all the real code)
 
 ## 🎯 Features
+
+### ✅ Non-Negotiable Engine Core (TIDGE)
+- **Rendering Core (3D)**: WebGL-based renderer, perspective & orthographic cameras, mesh rendering (cube, plane, sphere, custom mesh), materials (basic color + texture), depth testing (Z-buffer), back-face culling.
+- **Scene / Entity System**: Scene graph (parent–child hierarchy), entity/game object abstraction, transform system (position/rotation/scale), world ↔ local transform conversion.
+- **Game Loop (Engine Loop)**: Fixed timestep logic (physics), variable timestep rendering, Update → Physics → Render pipeline, pause/resume support.
+- **Input System**: Keyboard input, mouse input, pointer lock (FPS camera), input state tracking (pressed/held/released).
+- **Basic Physics & Collision**: AABB, sphere collision, raycasting, gravity, simple rigid bodies (velocity, mass).
+- **Asset Loader**: Texture loader, model loader (GLTF/OBJ), async loading, asset caching.
+- **Minimal Editor**: Scene view, play/stop, entity list, transform inspector.
+
+### 🚀 High-Value Additions
+- **Component System**: Entity + components model (Transform, MeshRenderer, Camera, Collider, Script).
+- **Camera System**: Free, FPS, follow cameras with smooth interpolation (lerp).
+- **Lighting System**: Directional, point, ambient lighting with basic Phong/Blinn.
+- **Serialization**: Save/load scenes to JSON with stable entity IDs.
+- **Script System**: Attach JS scripts to entities (onStart/onUpdate/onDestroy).
+- **Audio Engine**: Play/pause sounds, 3D positional audio, volume & looping.
+- **Debug Tools**: FPS counter, collision boxes, ray visualization, per-system logs.
+- **Engine Configuration**: Global config (resolution, fullscreen, vsync, gravity strength).
 
 ### Viewport
 - Click to select objects
@@ -70,9 +94,12 @@ A complete, fully-working professional game engine built in vanilla JavaScript.
 ### Engine Core (engine-aaa.js)
 - **Math**: Vec3 (3D vectors), Matrix4 (transformations)
 - **Animation**: Keyframe, AnimationCurve, AnimationClip, AnimationController
-- **Graphics**: Geometry (procedural meshes), Material, Renderer
-- **Scene**: Entity, Scene, Transform
-- **Loop**: GameLoop with delta time (60 FPS)
+- **Graphics**: Geometry (procedural meshes), Material, WebGLRenderer, Renderer
+- **Scene**: Entity, Scene, Transform, Component System
+- **Input/Physics**: InputSystem, RigidBody, AABB/Sphere, Raycasting
+- **Loop**: Fixed timestep + variable render GameLoop with pause/resume
+- **Assets**: Texture + model loaders (OBJ/GLTF) with caching
+- **Scripts/Audio**: Script lifecycle hooks + Web Audio engine
 
 ### Editor (editor-aaa.html)
 - **Layout**: 5-panel professional interface
@@ -108,7 +135,7 @@ A complete, fully-working professional game engine built in vanilla JavaScript.
 ## 💾 Local Storage
 
 Scenes are saved to browser local storage automatically when you click Save.
-Open DevTools → Application → Local Storage → tigen_scene to see the data.
+Open DevTools → Application → Local Storage → tidge_scene to see the data.
 
 ## 🎓 Keyboard & Mouse
 

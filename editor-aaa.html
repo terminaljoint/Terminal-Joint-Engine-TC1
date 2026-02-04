@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TIGEN - AAA Editor</title>
+  <title>TIDGE - Terminal joint Intelligence Development Game Engine Editor</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; font-family: 'Monaco', monospace; background: #0a0b0d; color: #ececed; overflow: hidden; }
 
     .layout {
       display: grid;
-      grid-template-columns: 280px 1fr 320px;
-      grid-template-rows: 60px 1fr 40px 200px;
+      grid-template-columns: 260px 1fr 320px;
+      grid-template-rows: 56px 1fr 220px;
       height: 100vh;
       gap: 1px;
       background: #1a1d22;
@@ -21,26 +21,27 @@
       grid-column: 1 / -1;
       background: #0f1013;
       border-bottom: 2px solid #00ff88;
-      padding: 12px 20px;
+      padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
-    .title { font-size: 18px; font-weight: bold; color: #00ff88; }
-    .stats { display: flex; gap: 20px; font-size: 12px; }
-    .stat { background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; padding: 6px 12px; border-radius: 3px; }
+    .title { font-size: 16px; font-weight: bold; color: #00ff88; }
+    .stats { display: flex; gap: 10px; font-size: 11px; align-items: center; flex-wrap: wrap; }
+    .stat { background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.35); padding: 6px 10px; border-radius: 4px; }
 
-    button {
+    button, select {
       background: rgba(0, 255, 136, 0.1);
-      border: 1px solid #00ff88;
+      border: 1px solid rgba(0, 255, 136, 0.6);
       color: #00ff88;
-      padding: 6px 12px;
-      border-radius: 3px;
+      padding: 6px 10px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 11px;
       font-weight: bold;
-      margin-left: 10px;
+      font-family: monospace;
     }
 
     button:hover { background: rgba(0, 255, 136, 0.2); }
@@ -55,40 +56,39 @@
     }
 
     .panel-title {
-      padding: 12px;
+      padding: 10px 12px;
       border-bottom: 1px solid rgba(0, 255, 136, 0.2);
       font-weight: bold;
       color: #00ff88;
-      font-size: 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
     }
 
     .panel-content {
       flex: 1;
       overflow-y: auto;
-      padding: 8px;
+      padding: 10px;
     }
 
     .left { grid-row: 2; grid-column: 1; }
     .center { grid-row: 2; grid-column: 2; display: flex; flex-direction: column; }
     .right { grid-row: 2; grid-column: 3; }
-    .bottom { grid-row: 3 / 5; grid-column: 1 / -1; }
+    .bottom { grid-row: 3; grid-column: 1 / -1; }
 
     .button-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      padding: 8px;
+      gap: 8px;
       margin-bottom: 12px;
     }
 
-    .button-group button { margin: 0; width: 100%; }
-
     .asset-item {
-      padding: 10px;
+      padding: 8px 10px;
       margin-bottom: 6px;
       background: rgba(0, 255, 136, 0.05);
       border: 1px solid rgba(0, 255, 136, 0.15);
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 11px;
     }
@@ -98,27 +98,43 @@
     .asset-category {
       font-weight: bold;
       color: #00ff88;
-      padding: 8px 0;
+      padding: 8px 0 6px;
       margin-top: 12px;
       font-size: 10px;
       text-transform: uppercase;
     }
 
-    #viewport {
+    .viewport-wrap {
+      position: relative;
       flex: 1;
-      background: linear-gradient(135deg, #0a0b0d 0%, #1a1d22 100%);
-      cursor: crosshair;
+      background: radial-gradient(circle at top, #1e2228 0%, #0b0c0f 70%);
+      border-left: 1px solid rgba(0, 255, 136, 0.1);
+      border-right: 1px solid rgba(0, 255, 136, 0.1);
     }
 
+    #viewport, #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #overlay { pointer-events: none; }
+
     .toolbar {
-      padding: 10px;
+      padding: 8px 10px;
       background: rgba(20, 23, 28, 0.9);
       border-bottom: 1px solid rgba(0, 255, 136, 0.2);
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
-    input[type="number"], input[type="text"] {
+    .toolbar .spacer { flex: 1; }
+
+    input[type="number"], input[type="text"], select {
       background: rgba(0, 255, 136, 0.05);
       border: 1px solid rgba(0, 255, 136, 0.2);
       color: #00ff88;
@@ -142,15 +158,22 @@
     #console {
       flex: 1;
       overflow-y: auto;
-      padding: 10px;
+      padding: 12px;
       font-size: 11px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
     }
 
     .log { padding: 4px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1); }
     .log.error { color: #ff6464; }
     .log.success { color: #00ff88; }
     .log.info { color: #00ccff; }
+
+    .hint {
+      font-size: 10px;
+      color: #777;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
 
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: rgba(0, 255, 136, 0.05); }
@@ -161,17 +184,18 @@
 <body>
   <div class="layout">
     <div class="header">
-      <div class="title">🎮 TIGEN - AAA Editor</div>
+      <div class="title">🎮 TIDGE 3D Editor</div>
       <div class="stats">
         <div class="stat">Entities: <span id="entityCount">0</span></div>
         <div class="stat">FPS: <span id="fpsCount">0</span></div>
         <button onclick="editorSave()">💾 Save</button>
         <button onclick="editorLoad()">📂 Load</button>
+        <button id="playBtn" onclick="togglePlay()">▶ Play</button>
       </div>
     </div>
 
     <div class="panel left">
-      <div class="panel-title">📦 CREATE & ASSETS</div>
+      <div class="panel-title">📦 Create & Assets</div>
       <div class="panel-content">
         <div class="button-group">
           <button onclick="createCube()">+ Cube</button>
@@ -188,35 +212,57 @@
 
         <div class="asset-category">Meshes</div>
         <div id="meshesList"></div>
+
+        <div class="asset-category">Entities</div>
+        <div id="entityList"></div>
+
+        <div class="asset-category">Camera</div>
+        <div class="property">
+          <div class="property-label">Mode</div>
+          <select id="cameraMode" onchange="setCameraMode(this.value)">
+            <option value="free">Free</option>
+            <option value="fps">FPS (Pointer Lock)</option>
+          </select>
+        </div>
+        <div class="property">
+          <div class="property-label">Projection</div>
+          <select id="cameraProjection" onchange="setCameraProjection(this.value)">
+            <option value="perspective">Perspective</option>
+            <option value="orthographic">Orthographic</option>
+          </select>
+        </div>
+        <div class="hint">Click the viewport to lock pointer in FPS mode. Use WASD to move.</div>
+
+        <div class="asset-category">Debug</div>
+        <div class="button-group">
+          <button id="debugToggle" onclick="toggleDebug()">Show Debug</button>
+          <button onclick="castDebugRay()">Cast Ray</button>
+        </div>
       </div>
     </div>
 
     <div class="center panel">
       <div class="toolbar">
+        <button onclick="resetView()">🎯 Reset View</button>
         <button onclick="toggleGrid()">🔲 Grid</button>
-        <button onclick="resetView()">🎯 Reset</button>
-        <button id="playBtn" onclick="togglePlay()">▶ Play</button>
-        <div style="flex: 1;"></div>
+        <div class="spacer"></div>
         <button onclick="selectedEntity ? deleteEntity() : null" style="border-color: #ff6464; color: #ff6464;">🗑️ Delete</button>
       </div>
-      <canvas id="viewport"></canvas>
+      <div class="viewport-wrap">
+        <canvas id="viewport"></canvas>
+        <canvas id="overlay"></canvas>
+      </div>
     </div>
 
     <div class="panel right">
-      <div class="panel-title">🔧 INSPECTOR</div>
+      <div class="panel-title">🔧 Inspector</div>
       <div class="panel-content" id="inspector">
         <div style="color: #888; font-size: 12px;">Select an object to edit</div>
       </div>
     </div>
 
-    <div style="grid-row: 3; grid-column: 1 / -1; background: #0f1013; border-top: 1px solid rgba(0, 255, 136, 0.2); display: flex; align-items: center; padding: 8px 20px; gap: 15px;">
-      <button id="timelinePlay" onclick="toggleTimelinePlay()" style="margin: 0;">⏯️</button>
-      <input type="range" id="timelineSlider" min="0" max="10" step="0.01" style="flex: 1; height: 6px; cursor: pointer;">
-      <span id="timelineTime" style="font-size: 11px; color: #00ff88; min-width: 50px;">0.0s</span>
-    </div>
-
-    <div class="panel bottom" style="grid-row: 4; background: rgba(15, 16, 19, 0.95); border-top: 1px solid rgba(0, 255, 136, 0.2);">
-      <div class="panel-title">📋 CONSOLE</div>
+    <div class="panel bottom">
+      <div class="panel-title">📋 Console</div>
       <div id="console"></div>
     </div>
   </div>
@@ -224,132 +270,297 @@
   <script src="engine-aaa.js"></script>
   <script>
     // ===== STATE =====
-    let scene, renderer, gameLoop, assetManager;
+    let scene, glRenderer, gameLoop, assetManager, physicsSystem, inputSystem, scriptSystem;
     let selectedEntity = null;
     let isPlaying = false;
-    let isTimelinePlay = false;
-    let timelineTime = 0;
+    let showDebug = false;
+    let camera, cameraController, lights, config;
+    let overlayCtx = null;
 
     // ===== INITIALIZATION =====
     function init() {
       const canvas = document.getElementById('viewport');
-      canvas.width = window.innerWidth * 0.65 - 20;
-      canvas.height = window.innerHeight - 320;
+      const overlay = document.getElementById('overlay');
+      resizeCanvases();
 
-      renderer = new Renderer(canvas);
+      glRenderer = new WebGLRenderer(canvas);
+      overlayCtx = overlay.getContext('2d');
       scene = new Scene();
       assetManager = new AssetManager();
+      physicsSystem = new PhysicsSystem();
+      inputSystem = new InputSystem(canvas);
+      scriptSystem = new ScriptSystem();
+      config = new EngineConfig();
       gameLoop = new GameLoop(60);
 
-      // Create default cube
-      const cube = scene.createEntity('Cube');
-      cube.setMesh(new Geometry('box', { size: 1 }), new Material('Green', { r: 0, g: 1, b: 0.8 }));
+      camera = new Camera('perspective');
+      camera.transform.position = new Vec3(0, 4, 8);
+      camera.transform.rotation.x = -0.4;
+      camera.transform.rotation.y = 0.0;
+      camera.aspect = canvas.width / canvas.height;
+      cameraController = new FreeCamera(camera, 6);
+
+      lights = {
+        directional: new Vec3(-1, -1, -0.5),
+        ambient: { r: 0.2, g: 0.2, b: 0.25 },
+        point: new Vec3(3, 6, 3),
+        pointColor: { r: 0.9, g: 0.9, b: 1.0 },
+        pointRange: 12
+      };
+
+      createDefaultScene();
 
       gameLoop.setCallback(update);
       gameLoop.start();
+      isPlaying = true;
+      document.getElementById('playBtn').textContent = '⏸ Stop';
 
       updateUI();
-      log('Editor initialized', 'success');
+      log('3D editor initialized', 'success');
     }
 
-    function update(dt) {
-      scene.update(dt);
-      if (isTimelinePlay && selectedEntity && selectedEntity.animationController.currentClip) {
-        timelineTime += dt;
-        document.getElementById('timelineSlider').value = timelineTime;
-        document.getElementById('timelineTime').textContent = timelineTime.toFixed(1) + 's';
-        if (timelineTime >= selectedEntity.animationController.currentClip.duration) {
-          timelineTime = 0;
-        }
+    function resizeCanvases() {
+      const canvas = document.getElementById('viewport');
+      const overlay = document.getElementById('overlay');
+      const wrap = document.querySelector('.viewport-wrap');
+      const rect = wrap.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      overlay.width = rect.width * window.devicePixelRatio;
+      overlay.height = rect.height * window.devicePixelRatio;
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      overlay.style.width = `${rect.width}px`;
+      overlay.style.height = `${rect.height}px`;
+      if (glRenderer) {
+        glRenderer.width = canvas.width;
+        glRenderer.height = canvas.height;
       }
-      renderer.render(scene);
-      document.getElementById('entityCount').textContent = scene.entities.length;
-      document.getElementById('fpsCount').textContent = gameLoop.fps;
+      if (camera) camera.aspect = canvas.width / canvas.height;
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvases();
+    });
+
+    function createDefaultScene() {
+      const ground = scene.createEntity('Ground');
+      ground.setMesh(new Geometry('plane', { width: 12, depth: 12 }), new Material('Ground', { r: 0.2, g: 0.8, b: 0.6 }));
+      ground.transform.position.y = -1.2;
+      ground.transform.rotation.x = 0;
+
+      const cube = scene.createEntity('Cube');
+      cube.setMesh(new Geometry('box', { size: 1 }), new Material('Green', { r: 0, g: 1, b: 0.8 }));
+      cube.rigidBody = new RigidBody(1);
+
+      const sphere = scene.createEntity('Sphere');
+      sphere.setMesh(new Geometry('sphere', { radius: 0.7 }), new Material('Red', { r: 1, g: 0.2, b: 0.3 }));
+      sphere.transform.position.x = 2;
+      sphere.rigidBody = new RigidBody(1);
+    }
+
+    function update(dt, isFixed) {
+      if (isFixed) {
+        scene.update(dt);
+        physicsSystem.gravity = config.gravity;
+        physicsSystem.update(scene.entities, dt);
+        scriptSystem.update(scene.entities, dt);
+      }
+
+      if (!isFixed) {
+        cameraController.update(dt, inputSystem);
+        glRenderer.render(scene, camera, lights);
+        drawOverlay();
+        document.getElementById('entityCount').textContent = scene.entities.length;
+        document.getElementById('fpsCount').textContent = gameLoop.fps;
+        inputSystem.endFrame();
+      }
+    }
+
+    function drawOverlay() {
+      if (!overlayCtx) return;
+      overlayCtx.clearRect(0, 0, overlayCtx.canvas.width, overlayCtx.canvas.height);
+      if (!showDebug) return;
+      for (const entity of scene.entities) {
+        if (entity.aabb) drawAABB(entity.aabb);
+      }
+      const debug = physicsSystem.debug;
+      for (const ray of debug.rays) {
+        drawRay(ray);
+      }
+      debug.rays.length = 0;
+    }
+
+    function projectPoint(point) {
+      const vp = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
+      const clip = Matrix4.transformVec4(vp, [point.x, point.y, point.z, 1]);
+      if (clip[3] === 0) return null;
+      const ndc = [clip[0] / clip[3], clip[1] / clip[3]];
+      const x = (ndc[0] * 0.5 + 0.5) * overlayCtx.canvas.width;
+      const y = (-ndc[1] * 0.5 + 0.5) * overlayCtx.canvas.height;
+      return { x, y };
+    }
+
+    function drawAABB(aabb) {
+      const corners = [
+        new Vec3(aabb.min.x, aabb.min.y, aabb.min.z),
+        new Vec3(aabb.max.x, aabb.min.y, aabb.min.z),
+        new Vec3(aabb.max.x, aabb.max.y, aabb.min.z),
+        new Vec3(aabb.min.x, aabb.max.y, aabb.min.z),
+        new Vec3(aabb.min.x, aabb.min.y, aabb.max.z),
+        new Vec3(aabb.max.x, aabb.min.y, aabb.max.z),
+        new Vec3(aabb.max.x, aabb.max.y, aabb.max.z),
+        new Vec3(aabb.min.x, aabb.max.y, aabb.max.z)
+      ];
+      const projected = corners.map(projectPoint).filter(Boolean);
+      if (projected.length < 4) return;
+      overlayCtx.strokeStyle = '#00ccff';
+      overlayCtx.lineWidth = 2;
+      overlayCtx.beginPath();
+      overlayCtx.moveTo(projected[0].x, projected[0].y);
+      projected.slice(1).forEach(p => overlayCtx.lineTo(p.x, p.y));
+      overlayCtx.closePath();
+      overlayCtx.stroke();
+    }
+
+    function drawRay(ray) {
+      const start = projectPoint(ray.origin);
+      const end = projectPoint(ray.origin.add(ray.direction.mul(5)));
+      if (!start || !end) return;
+      overlayCtx.strokeStyle = '#ffcc00';
+      overlayCtx.lineWidth = 2;
+      overlayCtx.beginPath();
+      overlayCtx.moveTo(start.x, start.y);
+      overlayCtx.lineTo(end.x, end.y);
+      overlayCtx.stroke();
     }
 
     // ===== CREATION =====
     function createCube() {
       const e = scene.createEntity(`Cube_${scene.entities.length}`);
       e.setMesh(new Geometry('box', { size: 1 }), new Material('Green', { r: 0, g: 1, b: 0.8 }));
+      e.rigidBody = new RigidBody(1);
       updateUI();
       log(`Created ${e.name}`, 'success');
     }
 
     function createSphere() {
       const e = scene.createEntity(`Sphere_${scene.entities.length}`);
-      e.setMesh(new Geometry('sphere', { radius: 0.7 }), new Material('Red', { r: 1, g: 0, b: 0 }));
+      e.setMesh(new Geometry('sphere', { radius: 0.7 }), new Material('Red', { r: 1, g: 0.2, b: 0.3 }));
+      e.rigidBody = new RigidBody(1);
       updateUI();
       log(`Created ${e.name}`, 'success');
     }
 
     function createCylinder() {
       const e = scene.createEntity(`Cylinder_${scene.entities.length}`);
-      e.setMesh(new Geometry('cylinder', { radius: 0.5, height: 1.5 }), new Material('Blue', { r: 0, g: 0, b: 1 }));
+      e.setMesh(new Geometry('cylinder', { radius: 0.5, height: 1.5 }), new Material('Blue', { r: 0.2, g: 0.4, b: 1 }));
+      e.rigidBody = new RigidBody(1);
       updateUI();
       log(`Created ${e.name}`, 'success');
     }
 
     function createPlane() {
       const e = scene.createEntity(`Plane_${scene.entities.length}`);
-      e.setMesh(new Geometry('plane', { width: 2, depth: 2 }), new Material('White', { r: 1, g: 1, b: 1 }));
+      e.setMesh(new Geometry('plane', { width: 2, depth: 2 }), new Material('White', { r: 0.9, g: 0.9, b: 0.9 }));
       updateUI();
       log(`Created ${e.name}`, 'success');
     }
 
     function createPyramid() {
       const e = scene.createEntity(`Pyramid_${scene.entities.length}`);
-      e.setMesh(new Geometry('pyramid', { size: 1 }), new Material('Black', { r: 0, g: 0, b: 0 }));
+      e.setMesh(new Geometry('pyramid', { size: 1 }), new Material('Black', { r: 0.2, g: 0.2, b: 0.2 }));
+      e.rigidBody = new RigidBody(1);
       updateUI();
       log(`Created ${e.name}`, 'success');
     }
 
+    // ===== CAMERA =====
+    function setCameraMode(mode) {
+      if (mode === 'fps') {
+        cameraController = new FPSCamera(camera, 6, 0.002);
+        log('Camera set to FPS mode (click viewport for pointer lock)', 'info');
+      } else {
+        cameraController = new FreeCamera(camera, 6);
+        log('Camera set to Free mode', 'info');
+      }
+    }
+
+    function setCameraProjection(mode) {
+      camera.type = mode;
+      log(`Camera projection: ${mode}`, 'info');
+    }
+
+    function resetView() {
+      camera.transform.position = new Vec3(0, 4, 8);
+      camera.transform.rotation = new Vec3(-0.4, 0, 0);
+      log('Camera reset', 'info');
+    }
+
+    // ===== DEBUG =====
+    function toggleDebug() {
+      showDebug = !showDebug;
+      document.getElementById('debugToggle').textContent = showDebug ? 'Hide Debug' : 'Show Debug';
+      log(`Debug ${showDebug ? 'enabled' : 'disabled'}`, 'info');
+    }
+
+    function castDebugRay() {
+      const forward = getCameraForward();
+      const ray = new Ray(camera.transform.position.clone(), forward);
+      physicsSystem.raycast(ray, scene.entities);
+      log('Raycast triggered', 'info');
+    }
+
+    function getCameraForward() {
+      const mat = camera.transform.getLocalMatrix();
+      const vec = Matrix4.transformVec4(mat, [0, 0, -1, 0]);
+      return new Vec3(vec[0], vec[1], vec[2]).norm();
+    }
+
+    function toggleGrid() {
+      log('Grid overlay is implicit in scene view', 'info');
+    }
+
     // ===== SELECTION =====
+    function selectEntity(entity) {
+      if (selectedEntity) selectedEntity.selected = false;
+      selectedEntity = entity;
+      if (selectedEntity) {
+        selectedEntity.selected = true;
+        log(`Selected: ${selectedEntity.name}`, 'info');
+      }
+      updateInspector();
+    }
+
+    function selectEntityById(id) {
+      const entity = scene.entities.find(e => e.id === id);
+      if (entity) selectEntity(entity);
+    }
+
+    function getPickRay(clientX, clientY) {
+      const canvas = document.getElementById('viewport');
+      const rect = canvas.getBoundingClientRect();
+      const x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -(((clientY - rect.top) / rect.height) * 2 - 1);
+      const invVP = Matrix4.multiply(camera.getProjectionMatrix(), camera.getViewMatrix());
+      invVP.invert();
+      const near = Matrix4.transformVec4(invVP, [x, y, -1, 1]);
+      const far = Matrix4.transformVec4(invVP, [x, y, 1, 1]);
+      const nearW = new Vec3(near[0] / near[3], near[1] / near[3], near[2] / near[3]);
+      const farW = new Vec3(far[0] / far[3], far[1] / far[3], far[2] / far[3]);
+      return new Ray(nearW, farW.sub(nearW));
+    }
+
     const canvas = document.getElementById('viewport');
     canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-
-      for (const entity of scene.entities) {
-        const ex = renderer.width / 2 + entity.transform.position.x * renderer.zoom;
-        const ey = renderer.height / 2 - entity.transform.position.z * renderer.zoom;
-        const s = Math.max(entity.transform.scale.x, entity.transform.scale.z) * renderer.zoom;
-
-        if (mx > ex - s / 2 && mx < ex + s / 2 && my > ey - s / 2 && my < ey + s / 2) {
-          if (selectedEntity) selectedEntity.selected = false;
-          selectedEntity = entity;
-          entity.selected = true;
-          updateInspector();
-          log(`Selected: ${entity.name}`, 'info');
-          return;
-        }
+      const ray = getPickRay(e.clientX, e.clientY);
+      const hit = physicsSystem.raycast(ray, scene.entities);
+      if (hit) {
+        selectEntity(hit);
+        return;
       }
-
-      if (selectedEntity) selectedEntity.selected = false;
-      selectedEntity = null;
-      updateInspector();
+      selectEntity(null);
     });
-
-    let dragging = false;
-    let dragStart = { x: 0, y: 0 };
-
-    canvas.addEventListener('mousedown', (e) => {
-      dragging = true;
-      dragStart = { x: e.clientX, y: e.clientY };
-    });
-
-    canvas.addEventListener('mousemove', (e) => {
-      if (dragging && selectedEntity) {
-        const dx = (e.clientX - dragStart.x) / renderer.zoom;
-        const dz = (dragStart.y - e.clientY) / renderer.zoom;
-        selectedEntity.transform.position.x += dx;
-        selectedEntity.transform.position.z += dz;
-        dragStart = { x: e.clientX, y: e.clientY };
-        updateInspector();
-      }
-    });
-
-    canvas.addEventListener('mouseup', () => { dragging = false; });
 
     // ===== INSPECTOR =====
     function updateInspector() {
@@ -363,7 +574,7 @@
       inspector.innerHTML = `
         <div class="property">
           <div class="property-label">Name</div>
-          <input type="text" value="${selectedEntity.name}" onchange="selectedEntity.name = this.value; updateInspector();">
+          <input type="text" value="${selectedEntity.name}" onchange="selectedEntity.name = this.value; updateInspector(); updateUI();">
         </div>
 
         <div class="property">
@@ -382,8 +593,8 @@
         </div>
 
         <div class="property">
-          <div class="property-label">Scale</div>
-          <input type="number" step="0.1" value="${t.scale.x.toFixed(2)}" onchange="selectedEntity.transform.scale.x = selectedEntity.transform.scale.y = selectedEntity.transform.scale.z = parseFloat(this.value); updateInspector();">
+          <div class="property-label">Rotation X</div>
+          <input type="number" step="0.1" value="${t.rotation.x.toFixed(2)}" onchange="selectedEntity.transform.rotation.x = parseFloat(this.value); updateInspector();">
         </div>
 
         <div class="property">
@@ -391,7 +602,17 @@
           <input type="number" step="0.1" value="${t.rotation.y.toFixed(2)}" onchange="selectedEntity.transform.rotation.y = parseFloat(this.value); updateInspector();">
         </div>
 
-        <button style="width: 100%; margin-top: 20px;" onclick="createAnimation()">✨ Create Animation</button>
+        <div class="property">
+          <div class="property-label">Rotation Z</div>
+          <input type="number" step="0.1" value="${t.rotation.z.toFixed(2)}" onchange="selectedEntity.transform.rotation.z = parseFloat(this.value); updateInspector();">
+        </div>
+
+        <div class="property">
+          <div class="property-label">Scale</div>
+          <input type="number" step="0.1" value="${t.scale.x.toFixed(2)}" onchange="selectedEntity.transform.scale.x = selectedEntity.transform.scale.y = selectedEntity.transform.scale.z = parseFloat(this.value); updateInspector();">
+        </div>
+
+        <button style="width: 100%; margin-top: 16px;" onclick="createAnimation()">✨ Create Animation</button>
       `;
     }
 
@@ -399,16 +620,23 @@
       // Materials
       let html = '';
       for (const mat of assetManager.getMaterials()) {
-        html += `<div class="asset-item" onclick="log('Material: ' + '${mat.name}')">${mat.name}</div>`;
+        html += `<div class="asset-item" onclick="log(\\"Material: ${mat.name}\\")">${mat.name}</div>`;
       }
       document.getElementById('materialsList').innerHTML = html;
 
       // Meshes
       html = '';
       for (const mesh of assetManager.getMeshes()) {
-        html += `<div class="asset-item" onclick="log('Mesh: ' + '${mesh}')">${mesh}</div>`;
+        html += `<div class="asset-item" onclick="log(\\"Mesh: ${mesh}\\")">${mesh}</div>`;
       }
       document.getElementById('meshesList').innerHTML = html;
+
+      // Entities
+      html = '';
+      for (const entity of scene.entities) {
+        html += `<div class="asset-item" onclick="selectEntityById(${entity.id})">${entity.name}</div>`;
+      }
+      document.getElementById('entityList').innerHTML = html || '<div style="color: #666; font-size: 11px;">No entities yet</div>';
     }
 
     // ===== ANIMATION =====
@@ -425,37 +653,14 @@
       log(`Created animation for ${selectedEntity.name}`, 'success');
     }
 
-    function toggleTimelinePlay() {
-      if (!selectedEntity) {
-        log('Select an object first', 'error');
-        return;
-      }
-      isTimelinePlay = !isTimelinePlay;
-      if (isTimelinePlay && selectedEntity.animationController.clips) {
-        const clipName = Object.keys(selectedEntity.animationController.clips)[0];
-        if (clipName) {
-          selectedEntity.animationController.play(clipName);
-          document.getElementById('timelinePlay').textContent = '⏸️';
-          log(`Playing animation`, 'success');
-        }
-      } else {
-        selectedEntity.animationController.stop();
-        document.getElementById('timelinePlay').textContent = '⏯️';
-        timelineTime = 0;
-      }
-    }
-
     function togglePlay() {
       isPlaying = !isPlaying;
       document.getElementById('playBtn').textContent = isPlaying ? '⏸ Stop' : '▶ Play';
-    }
-
-    function toggleGrid() {
-      log('Grid toggled');
-    }
-
-    function resetView() {
-      log('View reset');
+      if (isPlaying) {
+        gameLoop.resume();
+      } else {
+        gameLoop.pause();
+      }
     }
 
     // ===== DELETION =====
@@ -472,12 +677,12 @@
     // ===== SAVE/LOAD =====
     function editorSave() {
       const data = scene.serialize();
-      localStorage.setItem('tigen_scene', JSON.stringify(data));
+      localStorage.setItem('tidge_scene', JSON.stringify(data));
       log('Scene saved ✓', 'success');
     }
 
     function editorLoad() {
-      const data = localStorage.getItem('tigen_scene');
+      const data = localStorage.getItem('tidge_scene');
       if (data) {
         scene.deserialize(JSON.parse(data));
         updateUI();
